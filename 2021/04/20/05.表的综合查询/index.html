@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"big4.plus","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1. where 条件约束 2. group 数据分组 3. having 筛选数据 4. order by 排序和limit限制取出条目 5. 子查询 (1) where子查询 (2) from子查询 (3) exists子查询 子查询练习   6. join连接查询 (1) INNER JOIN内连接查询 (2) LEFT JOIN左连接查询 (3) RIGHT JOIN右连接查询 连接查询">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Big4PlusのBlog">
+<meta property="og:url" content="http://big4.plus/2021/04/20/05.%E8%A1%A8%E7%9A%84%E7%BB%BC%E5%90%88%E6%9F%A5%E8%AF%A2/index.html">
+<meta property="og:site_name" content="Big4PlusのBlog">
+<meta property="og:description" content="1. where 条件约束 2. group 数据分组 3. having 筛选数据 4. order by 排序和limit限制取出条目 5. 子查询 (1) where子查询 (2) from子查询 (3) exists子查询 子查询练习   6. join连接查询 (1) INNER JOIN内连接查询 (2) LEFT JOIN左连接查询 (3) RIGHT JOIN右连接查询 连接查询">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200528090314.png">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200528090343.png">
+<meta property="article:published_time" content="2021-04-20T12:30:22.519Z">
+<meta property="article:modified_time" content="2020-08-07T22:04:44.000Z">
+<meta property="article:author" content="Big4Plus">
+<meta property="article:tag" content="Big4Plus">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200528090314.png">
+
+<link rel="canonical" href="http://big4.plus/2021/04/20/05.%E8%A1%A8%E7%9A%84%E7%BB%BC%E5%90%88%E6%9F%A5%E8%AF%A2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title> | Big4PlusのBlog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Big4PlusのBlog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">心如止水，不喜不悲。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/Java/" rel="section"><i class="fab fa-java fa-fw"></i>Java</a>
+
+  </li>
+        <li class="menu-item menu-item-tools">
+
+    <a href="/categories/Tools/" rel="section"><i class="fa fa-tools fa-fw"></i>Tools</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://big4.plus/2021/04/20/05.%E8%A1%A8%E7%9A%84%E7%BB%BC%E5%90%88%E6%9F%A5%E8%AF%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Big4Plus">
+      <meta itemprop="description" content="Big4Plus">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big4PlusのBlog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-20 20:30:22" itemprop="dateCreated datePublished" datetime="2021-04-20T20:30:22+08:00">2021-04-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-08 06:04:44" itemprop="dateModified" datetime="2020-08-08T06:04:44+08:00">2020-08-08</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li><a href="#1-where-%E6%9D%A1%E4%BB%B6%E7%BA%A6%E6%9D%9F">1. where 条件约束</a></li>
+<li><a href="#2-group-%E6%95%B0%E6%8D%AE%E5%88%86%E7%BB%84">2. group 数据分组</a></li>
+<li><a href="#3-having-%E7%AD%9B%E9%80%89%E6%95%B0%E6%8D%AE">3. having 筛选数据</a></li>
+<li><a href="#4-order-by-%E6%8E%92%E5%BA%8F%E5%92%8Climit%E9%99%90%E5%88%B6%E5%8F%96%E5%87%BA%E6%9D%A1%E7%9B%AE">4. order by 排序和limit限制取出条目</a></li>
+<li><a href="#5-%E5%AD%90%E6%9F%A5%E8%AF%A2">5. 子查询</a><ul>
+<li><a href="#1-where%E5%AD%90%E6%9F%A5%E8%AF%A2"><strong>(1) where子查询</strong></a></li>
+<li><a href="#2-from%E5%AD%90%E6%9F%A5%E8%AF%A2"><strong>(2) from子查询</strong></a></li>
+<li><a href="#3-exists%E5%AD%90%E6%9F%A5%E8%AF%A2"><strong>(3) exists子查询</strong></a></li>
+<li><a href="#%E5%AD%90%E6%9F%A5%E8%AF%A2%E7%BB%83%E4%B9%A0"><strong>子查询练习</strong></a></li>
+</ul>
+</li>
+<li><a href="#6-join%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2">6. join连接查询</a><ul>
+<li><a href="#1-inner-join%E5%86%85%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><strong>(1) INNER JOIN内连接查询</strong></a></li>
+<li><a href="#2-left-join%E5%B7%A6%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><strong>(2) LEFT JOIN左连接查询</strong></a></li>
+<li><a href="#3-right-join%E5%8F%B3%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><strong>(3) RIGHT JOIN右连接查询</strong></a></li>
+<li><a href="#%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2%E7%BB%83%E4%B9%A0"><strong>连接查询练习</strong></a></li>
+</ul>
+</li>
+<li><a href="#7-union%E6%9F%A5%E8%AF%A2">7. union查询</a></li>
+</ul>
+<p>MySQL的比较运算和逻辑运算符：</p>
+<table>
+<thead>
+<tr>
+<th align="left">比较运算符号</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">=</td>
+<td align="left">等于</td>
+</tr>
+<tr>
+<td align="left">&lt;&gt;, !=</td>
+<td align="left">不等于</td>
+</tr>
+<tr>
+<td align="left">&gt;</td>
+<td align="left">大于</td>
+</tr>
+<tr>
+<td align="left">&lt;</td>
+<td align="left">小于</td>
+</tr>
+<tr>
+<td align="left">&lt;=</td>
+<td align="left">小于等于</td>
+</tr>
+<tr>
+<td align="left">&gt;=</td>
+<td align="left">大于等于</td>
+</tr>
+<tr>
+<td align="left">BETWEEN</td>
+<td align="left">在两值之间 &gt;=min&amp;&amp;&lt;=max</td>
+</tr>
+<tr>
+<td align="left">NOT BETWEEN</td>
+<td align="left">不在两值之间</td>
+</tr>
+<tr>
+<td align="left">IN</td>
+<td align="left">在集合中</td>
+</tr>
+<tr>
+<td align="left">NOT IN</td>
+<td align="left">不在集合中</td>
+</tr>
+<tr>
+<td align="left">&lt;=, &gt;=</td>
+<td align="left">严格比较两个NULL值是否相等 两个操作码均为NULL时，其所得值为1；而当一个操作码为NULL时，其所得值为0</td>
+</tr>
+<tr>
+<td align="left">LIKE</td>
+<td align="left">模糊匹配</td>
+</tr>
+<tr>
+<td align="left">REGEXP 或 RLIKE</td>
+<td align="left">正则式匹配</td>
+</tr>
+<tr>
+<td align="left">IS NULL</td>
+<td align="left">为空</td>
+</tr>
+<tr>
+<td align="left">IS NOT NULL</td>
+<td align="left">不为空</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="left">逻辑运算符号</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">NOT 或 !</td>
+<td align="left">逻辑非</td>
+</tr>
+<tr>
+<td align="left">AND</td>
+<td align="left">逻辑与</td>
+</tr>
+<tr>
+<td align="left">OR</td>
+<td align="left">逻辑或</td>
+</tr>
+<tr>
+<td align="left">XOR</td>
+<td align="left">逻辑异或</td>
+</tr>
+</tbody></table>
+<p>注意事项：</p>
+<ul>
+<li>and比or的优先级高，当表达式比较复杂时，习惯使用括号，避免出现歧义。</li>
+<li>in用法：in的后面跟着枚举，例如in (3,11)</li>
+<li>between通常和 and连用，例如 between 100 and 500</li>
+</ul>
+<p>示例表数据如下：</p>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200528090314.png"></p>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200528090343.png"></p>
+<h1 id="1-where-条件约束"><a href="#1-where-条件约束" class="headerlink" title="1. where 条件约束"></a>1. where 条件约束</h1><p>where是针对磁盘数据文件，后面一般都是列变量的表达式。模糊查询时，百分号%表示匹配所有字符，下划线_表示匹配一个字符。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ⑴ 主键为32的商品</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> goods_id=<span class="number">32</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑵ 不属第3栏目的所有商品</span></span><br><span class="line"><span class="keyword">SELECT</span> cat_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> cat_id!=<span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑶ 本店价格高于3000元的商品</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> shop_price&gt;<span class="number">3000</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑷ 本店价格低于或等于100元的商品</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> shop_price&lt;=<span class="number">100</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑸ 取出第4栏目或第11栏目的商品(不用or)</span></span><br><span class="line"><span class="keyword">SELECT</span> cat_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> cat_id <span class="keyword">IN</span> (<span class="number">4</span>,<span class="number">11</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑹ 取出100&lt;=价格&lt;=500的商品(不许用and)</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> shop_price <span class="keyword">BETWEEN</span> <span class="number">100</span> <span class="keyword">AND</span> <span class="number">500</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑺ 不属于第3栏目且不属于第11栏目的商品(and,或not in分别实现)</span></span><br><span class="line"><span class="keyword">SELECT</span> cat_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> (cat_id!=<span class="number">3</span>) &amp;&amp; (cat_id!=<span class="number">11</span>);</span><br><span class="line"><span class="keyword">SELECT</span> cat_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> cat_id <span class="keyword">NOT</span> <span class="keyword">IN</span> (<span class="number">3</span>,<span class="number">11</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑻ 取出价格大于100且小于300,或者大于3000小于4000商品</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> (shop_price&gt;<span class="number">100</span> &amp;&amp; shop_price&lt;<span class="number">300</span>) || (shop_price&gt;<span class="number">3000</span> &amp;&amp; shop_price&lt;<span class="number">4000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑼ 取出第3个栏目下面价格&lt;1000或&gt;3000,并且点击量&gt;5的系列商品</span></span><br><span class="line"><span class="keyword">SELECT</span> cat_id,goods_name,shop_price,click_count <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> (cat_id=<span class="number">3</span>) &amp;&amp; (shop_price&lt;<span class="number">1000</span> || shop_price&gt;<span class="number">3000</span>) &amp;&amp; (click_count&gt;=<span class="number">5</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑽ 取出第1个栏目下面的商品(注意:第1栏目下面没商品,但其子栏目下有)</span></span><br><span class="line"><span class="keyword">SELECT</span> cat_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> cat_id <span class="keyword">IN</span> (<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>);<span class="comment"># 手动查看第1栏目的子栏目有2 3 4 5</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑾ 取出名字以&quot;诺基亚&quot;开头的商品</span></span><br><span class="line"><span class="keyword">SELECT</span> cat_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> goods_name <span class="keyword">LIKE</span> <span class="string">&#x27;诺基亚%&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑿ 取出诺基亚N系列的手机</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> goods_name <span class="keyword">LIKE</span> <span class="string">&#x27;诺基亚N__&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⒀ 取出名字不以&quot;诺基亚&quot;开头的商品</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> goods_name <span class="keyword">NOT</span> <span class="keyword">LIKE</span> <span class="string">&#x27;诺基亚%&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⒁ 取出第3个栏目下面价格在1000到3000之间,并且点击量&gt;5 的&quot;诺基亚&quot;开头的商品</span></span><br><span class="line"><span class="keyword">SELECT</span> cat_id,goods_name,shop_price,click_count <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> (cat_id=<span class="number">3</span>) &amp;&amp; (shop_price&gt;<span class="number">1000</span> &amp;&amp; shop_price&lt;<span class="number">3000</span>) &amp;&amp; (click_count&gt;<span class="number">5</span>) &amp;&amp; (goods_name <span class="keyword">LIKE</span> <span class="string">&#x27;诺基亚%&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⒂ 把num值处于[20,29]之间,改为20，num值处于[30,39]之间的,改为30</span></span><br><span class="line"><span class="keyword">UPDATE</span> mian <span class="keyword">SET</span> <span class="keyword">num</span>=<span class="keyword">floor</span>(<span class="keyword">num</span>/<span class="number">10</span>)*<span class="number">10</span> <span class="keyword">WHERE</span> <span class="keyword">num</span> <span class="keyword">BETWEEN</span> <span class="number">20</span> <span class="keyword">AND</span> <span class="number">39</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⒃ 把good表中商品名为&#x27;诺基亚xxxx&#x27;的商品,改为&#x27;HTCxxxx&#x27;</span></span><br><span class="line"><span class="keyword">UPDATE</span> goods <span class="keyword">SET</span> goods_name=<span class="keyword">INSERT</span>(goods_name,<span class="number">1</span>,<span class="number">3</span>,<span class="string">&#x27;HTC&#x27;</span>) <span class="keyword">WHERE</span> goods_name <span class="keyword">LIKE</span> <span class="string">&#x27;诺基亚%&#x27;</span>; <span class="comment"># 注：字符串位置从1开始</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="2-group-数据分组"><a href="#2-group-数据分组" class="headerlink" title="2. group 数据分组"></a>2. group 数据分组</h1><p>使用group时首先会对该列重新排序，再做统计，所以比较耗资源，尽量避免使用。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ⑴ 查出最贵和最便宜的商品的价格</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">max</span>(shop_price),<span class="keyword">min</span>(shop_price) <span class="keyword">FROM</span> goods;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑵ 查出最新和最旧的商品编号</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">max</span>(goods_id),<span class="keyword">min</span>(goods_id) <span class="keyword">FROM</span> goods;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑶ 查询该店所有商品的库存总量</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">sum</span>(goods_number) <span class="keyword">FROM</span> goods;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑷ 查询所有商品的平均价格</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">avg</span>(shop_price) <span class="keyword">FROM</span> goods;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑸ 查询该店一共有多少种商品</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">count</span>(*) <span class="keyword">FROM</span> goods;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑹ 查询每个栏目下面最贵商品价格、最便宜商品价格、商品平均价格、商品库存量、商品库存总价格、商品种类</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">max</span>(shop_price),<span class="keyword">min</span>(shop_price),<span class="keyword">avg</span>(shop_price),<span class="keyword">sum</span>(goods_number),<span class="keyword">count</span>(*) <span class="keyword">FROM</span> goods <span class="keyword">GROUP</span> <span class="keyword">BY</span> cat_id;</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-having-筛选数据"><a href="#3-having-筛选数据" class="headerlink" title="3. having 筛选数据"></a>3. having 筛选数据</h1><p>having是针对where条件结果进行筛选，是对内存数据操作，所以having必须用在where之后。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ⑴ 查询该店的商品比市场价所节省的价格</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_name,market_price-shop_price <span class="keyword">FROM</span> goods;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑵ 查询每个商品所积压的货款</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_name,shop_price*goods_number <span class="keyword">FROM</span> goods;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑶ 查询该店积压的总货款</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">sum</span>(shop_price*goods.goods_number) <span class="keyword">FROM</span> goods;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑷ 查询该店每个栏目下面积压的货款</span></span><br><span class="line"><span class="keyword">SELECT</span> cat_id,<span class="keyword">sum</span>(shop_price*goods_number) <span class="keyword">FROM</span> goods <span class="keyword">GROUP</span> <span class="keyword">BY</span> cat_id;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑸ 查询比市场价省钱200元以上的商品及该商品所省的钱</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_id,goods_name,(market_price-goods.shop_price) <span class="keyword">AS</span> <span class="keyword">save</span> <span class="keyword">FROM</span> goods <span class="keyword">HAVING</span> <span class="keyword">save</span>&gt;<span class="number">200</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑹ 查询积压货款超过2W元的栏目,以及该栏目积压的货款</span></span><br><span class="line"><span class="keyword">SELECT</span> cat_id,<span class="keyword">sum</span>(shop_price*goods.goods_number) <span class="keyword">AS</span> catPrice <span class="keyword">FROM</span> goods <span class="keyword">GROUP</span> <span class="keyword">BY</span> cat_id <span class="keyword">HAVING</span> catPrice&gt;<span class="number">20000</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ⑺ 查询出2门及2门以上不及格者的平均成绩</span></span><br><span class="line">  成绩表result数据如下：</span><br><span class="line">  +<span class="comment">------+---------+-------+</span></span><br><span class="line">  | name | subject | score |</span><br><span class="line">  | 张三 |  数学   |  90    |</span><br><span class="line">  | 张三 |  语文   |  50    |</span><br><span class="line">  | 张三 |  地理   |  40    |</span><br><span class="line">  | 李四 |  语文   |  55    |</span><br><span class="line">  | 李四 |  政治   |  45    |</span><br><span class="line">  | 王五 |  政治   |  30    |</span><br><span class="line">  +<span class="comment">------+---------+-------+</span></span><br><span class="line">  <span class="keyword">SELECT</span> <span class="keyword">name</span>,<span class="keyword">avg</span>(score),<span class="keyword">sum</span>(score&lt;<span class="number">60</span>) <span class="keyword">AS</span> fail <span class="keyword">FROM</span> <span class="keyword">result</span> <span class="keyword">GROUP</span> <span class="keyword">BY</span> <span class="keyword">name</span> <span class="keyword">HAVING</span> fail&gt;=<span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-order-by-排序和limit限制取出条目"><a href="#4-order-by-排序和limit限制取出条目" class="headerlink" title="4. order by 排序和limit限制取出条目"></a>4. order by 排序和limit限制取出条目</h1><p>当按某列排序(默认asc升序，desc降序)无法满足要求时，可以在列的内部再继续排序。实际使用中oder by经常和limit配合一起使用。 limit有两个参数，分别是limit 偏移量，取出条目，可以使用在分页上。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># (1)按价格由高到低排序</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">ORDER</span> <span class="keyword">BY</span> shop_price <span class="keyword">ASC</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># (2)按发布时间由早到晚排序</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">ORDER</span> <span class="keyword">BY</span> goods_id <span class="keyword">DESC</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># (3)接栏目由低到高排序,栏目内部按价格由高到低排序</span></span><br><span class="line"><span class="keyword">SELECT</span> cat_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">ORDER</span> <span class="keyword">BY</span> cat_id <span class="keyword">ASC</span>, shop_price <span class="keyword">DESC</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># (4)取出价格最高的前三名商品</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">ORDER</span> <span class="keyword">BY</span> shop_price <span class="keyword">DESC</span> <span class="keyword">LIMIT</span> <span class="number">0</span>,<span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># (5)取出点击量前三名到前5名的商品</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_name,shop_price,click_count <span class="keyword">FROM</span> goods <span class="keyword">ORDER</span> <span class="keyword">BY</span> click_count <span class="keyword">DESC</span> <span class="keyword">LIMIT</span> <span class="number">0</span>,<span class="number">5</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="5-子查询"><a href="#5-子查询" class="headerlink" title="5. 子查询"></a>5. 子查询</h1><h2 id="1-where子查询"><a href="#1-where子查询" class="headerlink" title="(1) where子查询"></a><strong>(1) where子查询</strong></h2><p>内层select查询的结果充当外层select的where条件的查询。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 取出每个栏目下最新的商品</span></span><br><span class="line"><span class="keyword">SELECT</span> cat_id,goods_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> goods_id <span class="keyword">IN</span> (<span class="keyword">SELECT</span> <span class="keyword">max</span>(goods_id) <span class="keyword">FROM</span> goods <span class="keyword">GROUP</span> <span class="keyword">BY</span> cat_id);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-from子查询"><a href="#2-from子查询" class="headerlink" title="(2) from子查询"></a><strong>(2) from子查询</strong></h2><p>内层select作为一张表(AS table)，外层select从内层表取出数据。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 取出每个栏目下最新的商品</span></span><br><span class="line"><span class="keyword">SELECT</span> cat_id,goods_id,goods_name,shop_price <span class="keyword">FROM</span> (<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> goods <span class="keyword">ORDER</span> <span class="keyword">BY</span> cat_id <span class="keyword">ASC</span>,goods_id <span class="keyword">DESC</span>) <span class="keyword">AS</span> tmp <span class="keyword">GROUP</span> <span class="keyword">BY</span> cat_id;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-exists子查询"><a href="#3-exists子查询" class="headerlink" title="(3) exists子查询"></a><strong>(3) exists子查询</strong></h2><p>exists指定一个子查询，检测行的存在。该子查询实际上并不返回任何数据，而是返回值True或False。exists子查询能完成的where子查询 in也能完成。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 取出没有商品的栏目</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">category</span> <span class="keyword">WHERE</span> <span class="keyword">NOT</span> <span class="keyword">exists</span>(<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> category.cat_id=goods.cat_id);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="子查询练习"><a href="#子查询练习" class="headerlink" title="子查询练习"></a><strong>子查询练习</strong></h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查询出最新一行商品</span></span><br><span class="line"><span class="keyword">SELECT</span> goods_id,goods_name,shop_price <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> goods_id=(<span class="keyword">SELECT</span> <span class="keyword">max</span>(goods_id) <span class="keyword">FROM</span> goods);</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查询出编号为19的商品的栏目名称(where和连接查询)</span></span><br><span class="line">where子查询：</span><br><span class="line"><span class="keyword">SELECT</span> cat_id,cat_name <span class="keyword">FROM</span> <span class="keyword">category</span> <span class="keyword">WHERE</span> cat_id=(<span class="keyword">SELECT</span> cat_id <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> goods_id=<span class="number">19</span>);</span><br><span class="line">连接查询：</span><br><span class="line"><span class="keyword">SELECT</span> category.cat_id,category.cat_name <span class="keyword">FROM</span> </span><br><span class="line">  <span class="keyword">category</span> <span class="keyword">INNER</span> <span class="keyword">JOIN</span> goods <span class="keyword">ON</span> category.cat_id=goods.cat_id </span><br><span class="line"><span class="keyword">WHERE</span> goods.goods_id=<span class="number">19</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 用where和from型子查询方式把每个栏目下面最新的商品取出来</span></span><br><span class="line">where子查询：</span><br><span class="line"><span class="keyword">SELECT</span> goods_id,cat_id,goods_name <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> goods_id <span class="keyword">IN</span></span><br><span class="line">(<span class="keyword">SELECT</span> <span class="keyword">max</span>(goods_id) <span class="keyword">FROM</span> goods <span class="keyword">GROUP</span> <span class="keyword">BY</span> cat_id);</span><br><span class="line">from子查询：</span><br><span class="line"><span class="keyword">SELECT</span> goods_id,cat_id,goods_name <span class="keyword">FROM</span> </span><br><span class="line">(<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> goods <span class="keyword">ORDER</span> <span class="keyword">BY</span> cat_id <span class="keyword">ASC</span>,goods_id <span class="keyword">DESC</span>) <span class="keyword">AS</span> tmp <span class="keyword">GROUP</span> <span class="keyword">BY</span> tmp.cat_id;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 用exists型子查询,查出所有有商品的栏目</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">category</span> <span class="keyword">WHERE</span> <span class="keyword">exists</span>(<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> goods <span class="keyword">WHERE</span> category.cat_id=goods.cat_id);</span><br></pre></td></tr></table></figure>
+
+<h1 id="6-join连接查询"><a href="#6-join连接查询" class="headerlink" title="6. join连接查询"></a>6. join连接查询</h1><h2 id="1-INNER-JOIN内连接查询"><a href="#1-INNER-JOIN内连接查询" class="headerlink" title="(1) INNER JOIN内连接查询"></a><strong>(1) INNER JOIN内连接查询</strong></h2><p>把两张独立代表拼接成一张大表，拼接时指定匹配条件。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 语法：</span></span><br><span class="line">表1 INNER JOIN 表2 ON 匹配条件</span><br><span class="line"></span><br><span class="line"><span class="comment"># 把boy表和girl表同一组的人取出来</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> boy <span class="keyword">INNER</span> <span class="keyword">JOIN</span> girl <span class="keyword">ON</span> boy.hid=girl.hid;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-LEFT-JOIN左连接查询"><a href="#2-LEFT-JOIN左连接查询" class="headerlink" title="(2) LEFT JOIN左连接查询"></a><strong>(2) LEFT JOIN左连接查询</strong></h2><p>以左边的表为标准，有匹配条件取出值来，没有则填充默认值。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 以boy表为标准，把boy表和girl表进行同组匹配</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> boy <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> girl <span class="keyword">ON</span> boy.hid=girl.hid;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-RIGHT-JOIN右连接查询"><a href="#3-RIGHT-JOIN右连接查询" class="headerlink" title="(3) RIGHT JOIN右连接查询"></a><strong>(3) RIGHT JOIN右连接查询</strong></h2><p>以右边的表为标准，有匹配条件取出值来，没有则填充默认值。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 以girl表为标准，把boy表和girl表进行同组匹配</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> boy <span class="keyword">RIGHT</span> <span class="keyword">JOIN</span> girl <span class="keyword">ON</span> boy.hid=girl.hid;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="连接查询练习"><a href="#连接查询练习" class="headerlink" title="连接查询练习"></a><strong>连接查询练习</strong></h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 取出所有商品的商品名,栏目名,价格</span></span><br><span class="line"><span class="keyword">SELECT</span> goods.goods_id,goods.goods_name,category.cat_name,goods.shop_price <span class="keyword">FROM</span> goods <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> <span class="keyword">category</span> <span class="keyword">ON</span> goods.cat_id=category.cat_id;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 取出第4个栏目下的商品的商品名,栏目名,价格</span></span><br><span class="line"><span class="keyword">SELECT</span> goods.goods_id,goods.goods_name,category.cat_name,goods.shop_price <span class="keyword">FROM</span> goods <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> <span class="keyword">category</span> <span class="keyword">ON</span> goods.cat_id=category.cat_id <span class="keyword">WHERE</span> goods.cat_id=<span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查出 2006-6-1 到2006-7-1之间举行的所有比赛，并且用以下形式列出：主队名  比分 客队 比赛时间</span></span><br><span class="line">表名：m</span><br><span class="line">+<span class="comment">-----+------+------+------+------------+</span></span><br><span class="line">| mid | hid  | gid  | mres | matime     |</span><br><span class="line">+<span class="comment">-----+------+------+------+------------+</span></span><br><span class="line">|   1 |    1 |    2 | 2:0  | 2006-05-21 |</span><br><span class="line">|   2 |    2 |    3 | 1:2  | 2006-06-21 |</span><br><span class="line">|   3 |    3 |    1 | 2:5  | 2006-06-25 |</span><br><span class="line">|   4 |    2 |    1 | 3:2  | 2006-07-21 |</span><br><span class="line">+<span class="comment">-----+------+------+------+------------+</span></span><br><span class="line"></span><br><span class="line">队名：t</span><br><span class="line">+<span class="comment">------+----------+</span></span><br><span class="line">| tid  | tname    |</span><br><span class="line">+<span class="comment">------+----------+</span></span><br><span class="line">|    1 | 国安     |</span><br><span class="line">|    2 | 申花     |</span><br><span class="line">|    3 | 公益联队 |</span><br><span class="line">+<span class="comment">------+----------+</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 写法一：</span></span><br><span class="line"><span class="keyword">SELECT</span> ttb.tname,ttb.mres,t.tname,ttb.matime <span class="keyword">FROM</span> (<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> m <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> t <span class="keyword">ON</span> m.hid=t.tid)<span class="keyword">AS</span> ttb <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> t <span class="keyword">ON</span> ttb.gid=t.tid <span class="keyword">WHERE</span> ttb.matime <span class="keyword">BETWEEN</span> <span class="string">&#x27;2006-06-01&#x27;</span> <span class="keyword">AND</span> <span class="string">&#x27;2006-07-01&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 写法二：</span></span><br><span class="line"><span class="keyword">SELECT</span> t1.tname,mres,t2.tname,matime <span class="keyword">FROM</span> m <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> t <span class="keyword">AS</span> t1 <span class="keyword">ON</span> m.hid = t1.tid <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> t <span class="keyword">AS</span> t2 <span class="keyword">ON</span> m.gid = t2.tid <span class="keyword">WHERE</span> matime <span class="keyword">BETWEEN</span> <span class="string">&#x27;2006-06-01&#x27;</span> <span class="keyword">AND</span> <span class="string">&#x27;2006-07-01&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="7-union查询"><a href="#7-union查询" class="headerlink" title="7. union查询"></a>7. union查询</h1><p>把两条或多条sql查询的结果合并成一个结果集。主要用途：两张不同的表中有相同的列时，把结果集合并，或者简化两个复杂的where条件， 使用条件：两个表的列必须相同，但是例外的是列名称可以不相同。</p>
+<p>注意事项：</p>
+<ul>
+<li>完全相等的行将会合并，合并是耗时的操作，一般不让union合并，使用union all则不合并。</li>
+<li>union子句中一般不用order by，在union合并后可以再order by。</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># (1) 合并表a和表b，不合并相同的行</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> a <span class="keyword">UNION</span> <span class="keyword">ALL</span> <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> b;</span><br><span class="line"></span><br><span class="line"><span class="comment"># (2) 对两个表相同id的行进行num列求和。</span></span><br><span class="line"><span class="keyword">SELECT</span> tmp.id,<span class="keyword">sum</span>(tmp.num) <span class="keyword">FROM</span></span><br><span class="line">(<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> a <span class="keyword">UNION</span> <span class="keyword">ALL</span> <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> b) <span class="keyword">AS</span> tmp</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> tmp.id;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Big4Plus
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://big4.plus/2021/04/20/05.%E8%A1%A8%E7%9A%84%E7%BB%BC%E5%90%88%E6%9F%A5%E8%AF%A2/" title="">http://big4.plus/2021/04/20/05.表的综合查询/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/20/04.%E8%A1%A8%E7%9A%84%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/04/20/07.%E4%BA%8B%E5%8A%A1/" rel="next" title="">
+       <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-where-%E6%9D%A1%E4%BB%B6%E7%BA%A6%E6%9D%9F"><span class="nav-number">1.</span> <span class="nav-text">1. where 条件约束</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-group-%E6%95%B0%E6%8D%AE%E5%88%86%E7%BB%84"><span class="nav-number">2.</span> <span class="nav-text">2. group 数据分组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-having-%E7%AD%9B%E9%80%89%E6%95%B0%E6%8D%AE"><span class="nav-number">3.</span> <span class="nav-text">3. having 筛选数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-order-by-%E6%8E%92%E5%BA%8F%E5%92%8Climit%E9%99%90%E5%88%B6%E5%8F%96%E5%87%BA%E6%9D%A1%E7%9B%AE"><span class="nav-number">4.</span> <span class="nav-text">4. order by 排序和limit限制取出条目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-number">5.</span> <span class="nav-text">5. 子查询</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-where%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-number">5.1.</span> <span class="nav-text">(1) where子查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-from%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-number">5.2.</span> <span class="nav-text">(2) from子查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-exists%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-number">5.3.</span> <span class="nav-text">(3) exists子查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%90%E6%9F%A5%E8%AF%A2%E7%BB%83%E4%B9%A0"><span class="nav-number">5.4.</span> <span class="nav-text">子查询练习</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-join%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="nav-number">6.</span> <span class="nav-text">6. join连接查询</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-INNER-JOIN%E5%86%85%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="nav-number">6.1.</span> <span class="nav-text">(1) INNER JOIN内连接查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-LEFT-JOIN%E5%B7%A6%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="nav-number">6.2.</span> <span class="nav-text">(2) LEFT JOIN左连接查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-RIGHT-JOIN%E5%8F%B3%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="nav-number">6.3.</span> <span class="nav-text">(3) RIGHT JOIN右连接查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2%E7%BB%83%E4%B9%A0"><span class="nav-number">6.4.</span> <span class="nav-text">连接查询练习</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-union%E6%9F%A5%E8%AF%A2"><span class="nav-number">7.</span> <span class="nav-text">7. union查询</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Big4Plus"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">Big4Plus</p>
+  <div class="site-description" itemprop="description">Big4Plus</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Big4Plus</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">16k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">15 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
