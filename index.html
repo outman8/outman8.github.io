@@ -366,8 +366,860 @@
   
   
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://big4.plus/2019/11/30/Java/02.%E7%B1%BB%E7%9A%84%E4%BA%94%E5%A4%A7%E6%88%90%E5%88%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Big4Plus">
+      <meta itemprop="description" content="Big4Plus">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big4PlusのBlog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/30/Java/02.%E7%B1%BB%E7%9A%84%E4%BA%94%E5%A4%A7%E6%88%90%E5%88%86/" class="post-title-link" itemprop="url">02.类的五大成分</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-30 00:00:01" itemprop="dateCreated datePublished" datetime="2019-11-30T00:00:01+08:00">2019-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-21 16:43:28" itemprop="dateModified" datetime="2021-04-21T16:43:28+08:00">2021-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>类中有且仅有5大成分（五大金刚）</p>
+<ul>
+<li>成员变量Field：描述类或者对象的属性信息的。</li>
+<li>成员方法Method：描述类或者对象的行为的。</li>
+<li>构造器（构造方法,Constructor）: 初始化类的一个对象返回。</li>
+<li>代码块：代码块按照有无static可以分为静态代码块和实例代码块。</li>
+<li>内部类：将一个类定义在另一个类里面或者一个方法里面，这样的类称为内部类。</li>
+</ul>
+<h1 id="1-成员变量Field"><a href="#1-成员变量Field" class="headerlink" title="1. 成员变量Field"></a>1. 成员变量Field</h1><p>在Java中对象的属性称为成员变量。为了了解成员变量，在下面的代码中首先定义一个图书类，成员变量对应于类对象的属性，在Book类中设置3个成员变量，分别为id,name和category,分别对应于图书编号，图书名称和图书类别3个图书属性。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Book</span></span>&#123;</span><br><span class="line"> <span class="keyword">private</span> String name;    <span class="comment">//定义一个String类型的成员变量</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span></span>&#123;  <span class="comment">//定义一个getName()方法</span></span><br><span class="line">   <span class="keyword">int</span> id=<span class="number">0</span>;               <span class="comment">//局部变量</span></span><br><span class="line">   setName=(<span class="string">&quot;java&quot;</span>);       <span class="comment">//调用类中其他方法</span></span><br><span class="line">   <span class="keyword">return</span> id+<span class="keyword">this</span>.name;  <span class="comment">//设置方法返回值</span></span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span></span>&#123;   <span class="comment">//定义一个setName()方法</span></span><br><span class="line">     <span class="keyword">this</span>.name=name;         <span class="comment">//将参数赋值于类中的成员变量</span></span><br><span class="line">     &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> Book <span class="title">getBook</span><span class="params">()</span></span>&#123;</span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">this</span>;          <span class="comment">//返回Book类引用</span></span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>成员变量可以设置初始值，也可以不设置，如果不设置初始值，则会有默认值。</p>
+<h1 id="2-成员方法Method"><a href="#2-成员方法Method" class="headerlink" title="2. 成员方法Method"></a>2. 成员方法Method</h1><p>在Java语言中使用成员方法对应于类对象的行为。以上面代码中Book类为例，它包含getName()和setName()两个方法。</p>
+<p>一个成员方法可以有参数，这个参数可以是对象，也可以是基本数据类型的变量。同时成员方法有返回值和不返回任何值的选择，如果需要返回值，可以在方法体中使用return关键字，返回值可以是计算结果，也可以是其他想要的数值和对象，无返回值可以使用void关键字表示。</p>
+<p>在成员方法中可以调用其他成员方法和类成员变量，例如上述代码中getName()方法中就调用了setName()方法将图书名称赋予一个值。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/11/30/Java/02.%E7%B1%BB%E7%9A%84%E4%BA%94%E5%A4%A7%E6%88%90%E5%88%86/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://big4.plus/2019/11/30/Java/06.%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E4%BD%BF%E7%94%A8%E5%B0%8F%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Big4Plus">
+      <meta itemprop="description" content="Big4Plus">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big4PlusのBlog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/30/Java/06.%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E4%BD%BF%E7%94%A8%E5%B0%8F%E7%BB%93/" class="post-title-link" itemprop="url">06.引用类型使用小结</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-30 00:00:01" itemprop="dateCreated datePublished" datetime="2019-11-30T00:00:01+08:00">2019-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-21 16:43:28" itemprop="dateModified" datetime="2021-04-21T16:43:28+08:00">2021-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>实际的开发中，引用类型的使用非常重要，也是非常普遍的。我们可以在理解基本类型的使用方式基础上，进一步去掌握引用类型的使用方式。基本类型可以作为成员变量、作为方法的参数、作为方法的返回值，那么当然引用类型也是可以的。</p>
+<h1 id="1-引用类型作为方法参数和返回值"><a href="#1-引用类型作为方法参数和返回值" class="headerlink" title="1. 引用类型作为方法参数和返回值"></a>1. 引用类型作为方法参数和返回值</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span></span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;吃饭&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        method(<span class="keyword">new</span> Person());</span><br><span class="line">           Person p = createPerson();</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  <span class="comment">//引用类型作为方法参数</span></span><br><span class="line">  <span class="function">pubic <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">(Person p)</span></span>&#123;</span><br><span class="line">       p.eat();</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  <span class="comment">//引用类型作为返回值</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Person <span class="title">createPerson</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Person();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="2-引用类型作为成员变量"><a href="#2-引用类型作为成员变量" class="headerlink" title="2. 引用类型作为成员变量"></a>2. 引用类型作为成员变量</h1><p>​    我们每个人(Person)都有一个身份证(IDCard) , 为了表示这种关系 , 就需要在Person中定义一个IDCard的成员变量。定义Person类时，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    String name;<span class="comment">//姓名</span></span><br><span class="line">    <span class="keyword">int</span> age;<span class="comment">//年龄</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    使用使用<code>String</code> 类型表示姓名 , <code>int</code> 类型表示年龄。其实，<code>String</code>本身就是引用类型，我们往往忽略了它是引用类型。如果我们继续丰富这个类的定义，给<code>Person</code> 增加身份证号 , 身份证签发机关等属性，我们将如何编写呢？这时候就需要编写一个IDCard类了</p>
+<p>定义IDCard(身份证)类，添加身份证号 , 签发地等属性：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IDCard</span> </span>&#123;</span><br><span class="line">    String idNum;<span class="comment">//身份证号</span></span><br><span class="line">    String authority;<span class="comment">//签发地</span></span><br><span class="line">  </span><br><span class="line">      <span class="comment">//getter和setter方法</span></span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">      </span><br><span class="line">      <span class="comment">//toString方法</span></span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改Person类：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/11/30/Java/06.%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E4%BD%BF%E7%94%A8%E5%B0%8F%E7%BB%93/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://big4.plus/2019/11/30/Java/04.this%E5%85%B3%E9%94%AE%E5%AD%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Big4Plus">
+      <meta itemprop="description" content="Big4Plus">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big4PlusのBlog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/30/Java/04.this%E5%85%B3%E9%94%AE%E5%AD%97/" class="post-title-link" itemprop="url">04.this关键字</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-30 00:00:01" itemprop="dateCreated datePublished" datetime="2019-11-30T00:00:01+08:00">2019-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-21 16:43:28" itemprop="dateModified" datetime="2021-04-21T16:43:28+08:00">2021-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="this关键字的作用"><a href="#this关键字的作用" class="headerlink" title="this关键字的作用"></a>this关键字的作用</h1><ul>
+<li>this代表了当前对象的引用</li>
+<li>this关键字可以用在实例方法和构造器中</li>
+<li>this用在方法中，谁调用这个方法，this就代表谁</li>
+<li>this用在构造器中，代表构造器正在初始化的那个对象的引用</li>
+</ul>
+<h1 id="1-在方法中引用调用该方法的对象"><a href="#1-在方法中引用调用该方法的对象" class="headerlink" title="1. 在方法中引用调用该方法的对象"></a>1. 在方法中引用调用该方法的对象</h1><p>this关键字最大的作用就是<strong>让类中的一个方法访问该类里的另一个方法或者实例变量</strong>。</p>
+<p>假设定义了一个Person类，这个Person对象的eat()方法需要调用它的move()方法，则如何做呢？是否应该定义如下的Person类呢？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="comment">//定义一个move()方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">move</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;正在执行move()方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//定义一个eat()方法，eat()方法需要借助move()方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Person p = <span class="keyword">new</span> Person();</span><br><span class="line">        p.move();</span><br><span class="line">        System.out.println(<span class="string">&quot;正在执行eat()方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//创建Person对象</span></span><br><span class="line">        Person p = <span class="keyword">new</span> Person();</span><br><span class="line">        <span class="comment">//调用Person的eat()方法</span></span><br><span class="line">        p.eat();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">正在执行move()方法</span><br><span class="line">正在执行eat()方法</span><br></pre></td></tr></table></figure>
+
+<p>以上这种方式确实能够做到在eat()方法里调用move()方法，但从main()方法里的程序中可以看出，一共创建了两个对象：main()方法里创建一个对象；eat()方法里创建一个对象。可是真的需要创建两个对象吗？答案是否定的！因为当程序调用eat()方法时一定会提供一个Person对象，而不需要重新创建一个Person对象了。</p>
+<p>因此需要在eat()方法中获得调用该方法的对象，通过this关键字就可以满足这个需求。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/11/30/Java/04.this%E5%85%B3%E9%94%AE%E5%AD%97/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://big4.plus/2019/11/30/Java/08.%E6%8E%A5%E5%8F%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Big4Plus">
+      <meta itemprop="description" content="Big4Plus">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big4PlusのBlog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/30/Java/08.%E6%8E%A5%E5%8F%A3/" class="post-title-link" itemprop="url">08.接口</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-30 00:00:01" itemprop="dateCreated datePublished" datetime="2019-11-30T00:00:01+08:00">2019-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-21 16:43:28" itemprop="dateModified" datetime="2021-04-21T16:43:28+08:00">2021-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>我们已经学完了抽象类，抽象类中可以有抽象方法，也可以有普通方法，构造器，成员变量等。那么什么是接口呢？<strong>接口是更加彻底的抽象，接口中全部是抽象方法。（JDK8之前），接口同样是不能创建对象的</strong>。</p>
+<h1 id="2-定义格式"><a href="#2-定义格式" class="headerlink" title="2. 定义格式"></a>2. 定义格式</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接口的定义格式：</span></span><br><span class="line">修饰符 <span class="class"><span class="keyword">interface</span> 接口名称</span>&#123;</span><br><span class="line">    <span class="comment">// 抽象方法</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 修饰符：public|缺省</span></span><br><span class="line"><span class="comment">// 接口的声明：interface</span></span><br><span class="line"><span class="comment">// 接口名称：首字母大写，满足“驼峰模式”</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="3-接口成分的特点"><a href="#3-接口成分的特点" class="headerlink" title="3. 接口成分的特点"></a>3. 接口成分的特点</h1><p> 在JDK8之前，接口中的成分包含：抽象方法和常量</p>
+<h2 id="3-1-抽象方法"><a href="#3-1-抽象方法" class="headerlink" title="3.1 抽象方法"></a>3.1 抽象方法</h2><p> 注意：接口中的抽象方法默认会自动加上public abstract修饰程序员无需自己手写！！<br> 按照规范：以后接口中的抽象方法建议不要写上public abstract。因为没有必要啊，默认会加上。</p>
+<h2 id="3-2-常量"><a href="#3-2-常量" class="headerlink" title="3.2 常量"></a>3.2 常量</h2><p>在接口中定义的成员变量默认会加上： public static final修饰。也就是说在接口中定义的成员变量实际上是一个常量。这里是使用public static final修饰后，变量值就不可被修改，并且是静态化的变量可以直接用接口名访问，所以也叫常量。常量必须要给初始值。常量命名规范建议字母全部大写，多个单词用下划线连接。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/11/30/Java/08.%E6%8E%A5%E5%8F%A3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://big4.plus/2019/11/30/Java/09.final%E5%85%B3%E9%94%AE%E5%AD%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Big4Plus">
+      <meta itemprop="description" content="Big4Plus">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big4PlusのBlog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/30/Java/09.final%E5%85%B3%E9%94%AE%E5%AD%97/" class="post-title-link" itemprop="url">09.final关键字</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-30 00:00:01" itemprop="dateCreated datePublished" datetime="2019-11-30T00:00:01+08:00">2019-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-21 16:43:28" itemprop="dateModified" datetime="2021-04-21T16:43:28+08:00">2021-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>学习了继承后，我们知道，子类可以在父类的基础上改写父类内容，比如，方法重写。那么我们能不能随意的继承API中提供的类，改写其内容呢？显然这是不合适的。为了避免这种随意改写的情况，Java提供了<code>final</code> 关键字，用于修饰<strong>不可改变</strong>内容。</p>
+<ul>
+<li><strong>final</strong>：  不可改变，最终的含义。可以用于修饰类、方法和变量。<ul>
+<li>类：被修饰的类，不能被继承。</li>
+<li>方法：被修饰的方法，不能被重写。</li>
+<li>变量：被修饰的变量，有且仅能被赋值一次。</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-使用方式"><a href="#2-使用方式" class="headerlink" title="2. 使用方式"></a>2. 使用方式</h1><h2 id="2-1-修饰类"><a href="#2-1-修饰类" class="headerlink" title="2.1 修饰类"></a>2.1 修饰类</h2><p>final修饰的类，不能被继承。</p>
+<p>格式如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> 类名 </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Fu</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// class Zi extends Fu &#123;&#125; // 报错,不能继承final的类</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/11/30/Java/09.final%E5%85%B3%E9%94%AE%E5%AD%97/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://big4.plus/2019/11/30/Java/07.%E6%8A%BD%E8%B1%A1%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Big4Plus">
+      <meta itemprop="description" content="Big4Plus">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big4PlusのBlog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/30/Java/07.%E6%8A%BD%E8%B1%A1%E7%B1%BB/" class="post-title-link" itemprop="url">07.抽象类</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-30 00:00:01" itemprop="dateCreated datePublished" datetime="2019-11-30T00:00:01+08:00">2019-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-21 16:43:28" itemprop="dateModified" datetime="2021-04-21T16:43:28+08:00">2021-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><h2 id="1-1-抽象类引入"><a href="#1-1-抽象类引入" class="headerlink" title="1.1 抽象类引入"></a>1.1 抽象类引入</h2><p>父类中的方法，被它的子类们重写，子类各自的实现都不尽相同。那么父类的方法声明和方法主体，只有声明还有意义，而方法主体则没有存在的意义了(因为子类对象会调用自己重写的方法)。换句话说，父类可能知道子类应该有哪个功能，但是功能具体怎么实现父类是不清楚的（由子类自己决定），父类完全只需要提供一个没有方法体的方法签名即可，具体实现交给子类自己去实现。<strong>我们把没有方法体的方法称为抽象方法。Java语法规定，包含抽象方法的类就是抽象类</strong>。</p>
+<ul>
+<li><strong>抽象方法</strong> ： 没有方法体的方法。</li>
+<li><strong>抽象类</strong>：包含抽象方法的类。</li>
+</ul>
+<h1 id="2-abstract使用格式"><a href="#2-abstract使用格式" class="headerlink" title="2 abstract使用格式"></a>2 abstract使用格式</h1><p><strong>abstract是抽象的意思，用于修饰方法和类，修饰的方法是抽象方法，修饰的类是抽象类。</strong></p>
+<h2 id="2-1-抽象方法"><a href="#2-1-抽象方法" class="headerlink" title="2.1 抽象方法"></a>2.1 抽象方法</h2><p>使用<code>abstract</code> 关键字修饰方法，该方法就成了抽象方法，抽象方法只包含一个方法名，而没有方法体。</p>
+<p>定义格式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">修饰符 <span class="keyword">abstract</span> 返回值类型 方法名 (参数列表)；</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/11/30/Java/07.%E6%8A%BD%E8%B1%A1%E7%B1%BB/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://big4.plus/2019/11/30/Java/10.%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Big4Plus">
+      <meta itemprop="description" content="Big4Plus">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big4PlusのBlog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/30/Java/10.%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">10.单例设计模式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-30 00:00:01" itemprop="dateCreated datePublished" datetime="2019-11-30T00:00:01+08:00">2019-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-21 16:43:28" itemprop="dateModified" datetime="2021-04-21T16:43:28+08:00">2021-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="1-单例设计模式的作用"><a href="#1-单例设计模式的作用" class="headerlink" title="1. 单例设计模式的作用"></a>1. 单例设计模式的作用</h1><p>单例模式，是一种常用的软件设计模式。通过单例模式可以保证系统中，应用该模式的这个类只有一个实例。即一个类只有一个对象实例。</p>
+<h1 id="2-单例设计模式的实现步骤"><a href="#2-单例设计模式的实现步骤" class="headerlink" title="2. 单例设计模式的实现步骤"></a>2. 单例设计模式的实现步骤</h1><ol>
+<li><p>将构造方法私有化，使其不能在类的外部通过new关键字实例化该类对象。</p>
+</li>
+<li><p>在该类内部产生一个唯一的实例化对象，并且将其封装为private static类型的成员变量。</p>
+</li>
+<li><p>定义一个静态方法返回这个唯一对象。</p>
+</li>
+</ol>
+<h1 id="3-单例设计模式的类型"><a href="#3-单例设计模式的类型" class="headerlink" title="3. 单例设计模式的类型"></a>3. 单例设计模式的类型</h1><p>根据实例化对象的时机单例设计模式又分为以下两种:</p>
+<ol>
+<li><p>饿汉单例设计模式</p>
+</li>
+<li><p>懒汉单例设计模式</p>
+</li>
+</ol>
+<h1 id="4-饿汉单例设计模式"><a href="#4-饿汉单例设计模式" class="headerlink" title="4. 饿汉单例设计模式"></a>4. 饿汉单例设计模式</h1><p>饿汉单例设计模式就是使用类的时候已经将对象创建完毕，不管以后会不会使用到该实例化对象，先创建了再说。很着急的样子，故被称为“饿汉模式”。</p>
+<p>代码如下：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/11/30/Java/10.%E5%8D%95%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://big4.plus/2019/11/30/Java/11.%E6%9E%9A%E4%B8%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Big4Plus">
+      <meta itemprop="description" content="Big4Plus">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big4PlusのBlog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/30/Java/11.%E6%9E%9A%E4%B8%BE/" class="post-title-link" itemprop="url">11.枚举</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-30 00:00:01" itemprop="dateCreated datePublished" datetime="2019-11-30T00:00:01+08:00">2019-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-21 16:43:28" itemprop="dateModified" datetime="2021-04-21T16:43:28+08:00">2021-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="1-不适用枚举存在的问题"><a href="#1-不适用枚举存在的问题" class="headerlink" title="1. 不适用枚举存在的问题"></a>1. 不适用枚举存在的问题</h1><p>假设我们要定义一个人类，人类中包含姓名和性别。通常会将性别定义成字符串类型，效果如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String sex;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String name, String sex)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.sex = sex;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 省略get/set/toString方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo01</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Person p1 = <span class="keyword">new</span> Person(<span class="string">&quot;张三&quot;</span>, <span class="string">&quot;男&quot;</span>);</span><br><span class="line">        Person p2 = <span class="keyword">new</span> Person(<span class="string">&quot;张三&quot;</span>, <span class="string">&quot;abc&quot;</span>); <span class="comment">// 因为性别是字符串,所以我们可以传入任意字符串</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不使用枚举存在的问题：可以给性别传入任意的字符串，导致性别是非法的数据，不安全。</p>
+<h1 id="2-枚举的作用与应用场景"><a href="#2-枚举的作用与应用场景" class="headerlink" title="2. 枚举的作用与应用场景"></a>2. 枚举的作用与应用场景</h1><p>枚举的作用：一个方法接收的参数是固定范围之内的时候，那么即可使用枚举。</p>
+<h1 id="3-枚举的基本语法"><a href="#3-枚举的基本语法" class="headerlink" title="3. 枚举的基本语法"></a>3. 枚举的基本语法</h1><h2 id="3-1-枚举的概念"><a href="#3-1-枚举的概念" class="headerlink" title="3.1 枚举的概念"></a>3.1 枚举的概念</h2><p>枚举是一种特殊类。枚举是有固定实例个数的类型，我们可以把枚举理解成有固定个数实例的多例模式。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/11/30/Java/11.%E6%9E%9A%E4%B8%BE/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
 
@@ -433,13 +1285,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">51</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -481,12 +1333,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">10k</span>
+    <span title="站点总字数">337k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">9 分钟</span>
+    <span title="站点阅读时长">5:06</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

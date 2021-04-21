@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"big4.plus","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1.Collections常用功能 java.utils.Collections是集合工具类，用来对集合进行操作。 常用方法如下：  public static void shuffle(List&lt;?&gt; list) :打乱集合顺序。  public static &lt;T&gt; void sort(List&lt;T&gt; list):将集合中元素按照默认规则排序。  publi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="23.Collections类">
+<meta property="og:url" content="http://big4.plus/2019/11/30/Java/23.Collections%E7%B1%BB/index.html">
+<meta property="og:site_name" content="Big4PlusのBlog">
+<meta property="og:description" content="1.Collections常用功能 java.utils.Collections是集合工具类，用来对集合进行操作。 常用方法如下：  public static void shuffle(List&lt;?&gt; list) :打乱集合顺序。  public static &lt;T&gt; void sort(List&lt;T&gt; list):将集合中元素按照默认规则排序。  publi">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-11-29T16:00:01.000Z">
+<meta property="article:modified_time" content="2021-04-21T08:43:28.775Z">
+<meta property="article:author" content="Big4Plus">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://big4.plus/2019/11/30/Java/23.Collections%E7%B1%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>23.Collections类 | Big4PlusのBlog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Big4PlusのBlog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">心如止水，不喜不悲。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/Java/" rel="section"><i class="fab fa-java fa-fw"></i>Java</a>
+
+  </li>
+        <li class="menu-item menu-item-linux">
+
+    <a href="/categories/Linux/" rel="section"><i class="fa fa-linux fa-fw"></i>Linux</a>
+
+  </li>
+        <li class="menu-item menu-item-database">
+
+    <a href="/categories/Database/" rel="section"><i class="fa fa-database fa-fw"></i>Database</a>
+
+  </li>
+        <li class="menu-item menu-item-tools">
+
+    <a href="/categories/Tools/" rel="section"><i class="fa fa-tools fa-fw"></i>Tools</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://big4.plus/2019/11/30/Java/23.Collections%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Big4Plus">
+      <meta itemprop="description" content="Big4Plus">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big4PlusのBlog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          23.Collections类
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-30 00:00:01" itemprop="dateCreated datePublished" datetime="2019-11-30T00:00:01+08:00">2019-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-21 16:43:28" itemprop="dateModified" datetime="2021-04-21T16:43:28+08:00">2021-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-Collections常用功能"><a href="#1-Collections常用功能" class="headerlink" title="1.Collections常用功能"></a>1.Collections常用功能</h1><ul>
+<li><p><code>java.utils.Collections</code>是集合工具类，用来对集合进行操作。</p>
+<p>常用方法如下：</p>
+</li>
+<li><p><code>public static void shuffle(List&lt;?&gt; list) </code>:打乱集合顺序。</p>
+</li>
+<li><p><code>public static &lt;T&gt; void sort(List&lt;T&gt; list)</code>:将集合中元素按照默认规则排序。</p>
+</li>
+<li><p><code>public static &lt;T&gt; void sort(List&lt;T&gt; list，Comparator&lt;? super T&gt; )</code>:将集合中元素按照指定规则排序。</p>
+</li>
+</ul>
+<p>代码演示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CollectionsDemo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ArrayList&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">   </span><br><span class="line">        list.add(<span class="number">100</span>);</span><br><span class="line">        list.add(<span class="number">300</span>);</span><br><span class="line">        list.add(<span class="number">200</span>);</span><br><span class="line">        list.add(<span class="number">50</span>);</span><br><span class="line">        <span class="comment">//排序方法 </span></span><br><span class="line">        Collections.sort(list);</span><br><span class="line">        System.out.println(list);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[50,100, 200, 300]</span><br></pre></td></tr></table></figure>
+
+<p>我们的集合按照默认的自然顺序进行了排列，如果想要指定顺序那该怎么办呢？</p>
+<h1 id="2-Comparator比较器"><a href="#2-Comparator比较器" class="headerlink" title="2.Comparator比较器"></a>2.Comparator比较器</h1><p>我们还是先研究这个方法</p>
+<p><code>public static &lt;T&gt; void sort(List&lt;T&gt; list)</code>:将集合中元素按照默认规则排序。</p>
+<p>不过这次存储的是字符串类型。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CollectionsDemo2</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ArrayList&lt;String&gt;  list = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">        list.add(<span class="string">&quot;cba&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;aba&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;sba&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;nba&quot;</span>);</span><br><span class="line">        <span class="comment">//排序方法</span></span><br><span class="line">        Collections.sort(list);</span><br><span class="line">        System.out.println(list);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[aba, cba, nba, sba]</span><br></pre></td></tr></table></figure>
+
+<p>我们使用的是默认的规则完成字符串的排序，那么默认规则是怎么定义出来的呢？</p>
+<p>说到排序了，简单的说就是两个对象之间比较大小，那么在JAVA中提供了两种比较实现的方式，一种是比较死板的采用<code>java.lang.Comparable</code>接口去实现，一种是灵活的当我需要做排序的时候在去选择的<code>java.util.Comparator</code>接口完成。</p>
+<p>那么我们采用的<code>public static &lt;T&gt; void sort(List&lt;T&gt; list)</code>这个方法完成的排序，实际上要求了被排序的类型需要实现Comparable接口完成比较的功能，在String类型上如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">String</span> <span class="keyword">implements</span> <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span>, <span class="title">Comparable</span>&lt;<span class="title">String</span>&gt;, <span class="title">CharSequence</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+
+<p>String类实现了这个接口，并完成了比较规则的定义，但是这样就把这种规则写死了，那比如我想要字符串按照第一个字符降序排列，那么这样就要修改String的源代码，这是不可能的了，那么这个时候我们可以使用</p>
+<p><code>public static &lt;T&gt; void sort(List&lt;T&gt; list，Comparator&lt;? super T&gt; )</code>方法灵活的完成，这个里面就涉及到了Comparator这个接口，位于位于java.util包下，排序是comparator能实现的功能之一,该接口代表一个比较器，比较器具有可比性！顾名思义就是做排序的，通俗地讲需要比较两个对象谁排在前谁排在后，那么比较的方法就是：</p>
+<ul>
+<li><p><code> public int compare(String o1, String o2)</code>：比较其两个参数的顺序。</p>
+<blockquote>
+<p>两个对象比较的结果有三种：大于，等于，小于。</p>
+<p>如果要按照升序排序，<br>则o1 小于o2，返回（负数），相等返回0，01大于02返回（正数）<br>如果要按照降序排序<br>则o1 小于o2，返回（正数），相等返回0，01大于02返回（负数）</p>
+</blockquote>
+</li>
+</ul>
+<p>操作如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CollectionsDemo3</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ArrayList&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">        list.add(<span class="string">&quot;cba&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;aba&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;sba&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;nba&quot;</span>);</span><br><span class="line">        <span class="comment">//排序方法  按照第一个单词的降序</span></span><br><span class="line">        Collections.sort(list, <span class="keyword">new</span> Comparator&lt;String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(String o1, String o2)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> o2.charAt(<span class="number">0</span>) - o1.charAt(<span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        System.out.println(list);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[sba, nba, cba, aba]</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-简述Comparable和Comparator两个接口的区别"><a href="#3-简述Comparable和Comparator两个接口的区别" class="headerlink" title="3.简述Comparable和Comparator两个接口的区别"></a>3.简述Comparable和Comparator两个接口的区别</h1><p><strong>Comparable</strong>：强行对实现它的每个类的对象进行整体排序。这种排序被称为类的自然排序，类的compareTo方法被称为它的自然比较方法。只能在类中实现compareTo()一次，不能经常修改类的代码实现自己想要的排序。实现此接口的对象列表（和数组）可以通过Collections.sort（和Arrays.sort）进行自动排序，对象可以用作有序映射中的键或有序集合中的元素，无需指定比较器。</p>
+<p><strong>Comparator</strong>：强行对某个对象进行整体排序。可以将Comparator 传递给sort方法（如Collections.sort或 Arrays.sort），从而允许在排序顺序上实现精确控制。还可以使用Comparator来控制某些数据结构（如有序set或有序映射）的顺序，或者为那些没有自然顺序的对象collection提供排序。</p>
+<h1 id="4-可变参数"><a href="#4-可变参数" class="headerlink" title="4.可变参数"></a>4.可变参数</h1><p>在<strong>JDK1.5</strong>之后，如果我们定义一个方法需要接受多个参数，并且多个参数类型一致，我们可以对其简化.</p>
+<p><strong>格式：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">修饰符 返回值类型 方法名(参数类型... 形参名)&#123;  &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>代码演示:</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ChangeArgs</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> sum = getSum(<span class="number">6</span>, <span class="number">7</span>, <span class="number">2</span>, <span class="number">12</span>, <span class="number">2121</span>);</span><br><span class="line">        System.out.println(sum);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getSum</span><span class="params">(<span class="keyword">int</span>... arr)</span> </span>&#123;</span><br><span class="line">           <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> a : arr) &#123;</span><br><span class="line">         sum += a;</span><br><span class="line">        &#125;</span><br><span class="line">            <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong></p>
+<p>​    1.一个方法只能有一个可变参数</p>
+<p>​    2.如果方法中有多个参数，可变参数要放到最后。</p>
+<p><strong>应用场景: Collections</strong></p>
+<p>​    在Collections中也提供了添加一些元素方法：</p>
+<p>​    <code>public static &lt;T&gt; boolean addAll(Collection&lt;T&gt; c, T... elements)  </code>:往集合中添加一些元素。</p>
+<p><strong>代码演示:</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CollectionsDemo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">      ArrayList&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">      <span class="comment">//原来写法</span></span><br><span class="line">      <span class="comment">//list.add(12);</span></span><br><span class="line">      <span class="comment">//list.add(14);</span></span><br><span class="line">      <span class="comment">//list.add(15);</span></span><br><span class="line">      <span class="comment">//list.add(1000);</span></span><br><span class="line">      <span class="comment">//采用工具类 完成 往集合中添加元素  </span></span><br><span class="line">      Collections.addAll(list, <span class="number">5</span>, <span class="number">222</span>, <span class="number">1</span>，<span class="number">2</span>);</span><br><span class="line">      System.out.println(list);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="5-练习"><a href="#5-练习" class="headerlink" title="5.练习"></a>5.练习</h1><p>创建一个学生类，存储到ArrayList集合中完成指定排序操作。</p>
+<p>Student 初始类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">(String name, <span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Student&#123;&quot;</span> +</span><br><span class="line">               <span class="string">&quot;name=&#x27;&quot;</span> + name + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">               <span class="string">&quot;, age=&quot;</span> + age +</span><br><span class="line">               <span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 创建四个学生对象 存储到集合中</span></span><br><span class="line">        ArrayList&lt;Student&gt; list = <span class="keyword">new</span> ArrayList&lt;Student&gt;();</span><br><span class="line"></span><br><span class="line">        list.add(<span class="keyword">new</span> Student(<span class="string">&quot;rose&quot;</span>,<span class="number">18</span>));</span><br><span class="line">        list.add(<span class="keyword">new</span> Student(<span class="string">&quot;jack&quot;</span>,<span class="number">16</span>));</span><br><span class="line">        list.add(<span class="keyword">new</span> Student(<span class="string">&quot;abc&quot;</span>,<span class="number">16</span>));</span><br><span class="line">        list.add(<span class="keyword">new</span> Student(<span class="string">&quot;ace&quot;</span>,<span class="number">17</span>));</span><br><span class="line">        list.add(<span class="keyword">new</span> Student(<span class="string">&quot;mark&quot;</span>,<span class="number">16</span>));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">          让学生 按照年龄排序 升序</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line"><span class="comment">//        Collections.sort(list);//要求 该list中元素类型必须实现比较器Comparable接口</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (Student student : list) &#123;</span><br><span class="line">            System.out.println(student);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发现，当我们调用Collections.sort()方法的时候 程序报错了。</p>
+<p>原因：如果想要集合中的元素完成排序，那么必须要实现比较器Comparable接口。</p>
+<p>于是我们就完成了Student类的一个实现，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">Student</span>&gt;</span>&#123;</span><br><span class="line">    ....</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Student o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.age-o.age;<span class="comment">//升序</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再次测试，代码就OK 了效果如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Student&#123;name=<span class="string">&#x27;jack&#x27;</span>, age=<span class="number">16</span>&#125;</span><br><span class="line">Student&#123;name=<span class="string">&#x27;abc&#x27;</span>, age=<span class="number">16</span>&#125;</span><br><span class="line">Student&#123;name=<span class="string">&#x27;mark&#x27;</span>, age=<span class="number">16</span>&#125;</span><br><span class="line">Student&#123;name=<span class="string">&#x27;ace&#x27;</span>, age=<span class="number">17</span>&#125;</span><br><span class="line">Student&#123;name=<span class="string">&#x27;rose&#x27;</span>, age=<span class="number">18</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="6-扩展"><a href="#6-扩展" class="headerlink" title="6.扩展"></a>6.扩展</h1><p>如果在使用的时候，想要独立的定义规则去使用 可以采用<code>Collections.sort(List list,Comparetor&lt;T&gt; c)</code>方式，自己定义规则：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Collections.sort(list, <span class="keyword">new</span> Comparator&lt;Student&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Student o1, Student o2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> o2.getAge()-o1.getAge();<span class="comment">//以学生的年龄降序</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>效果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Student&#123;name&#x3D;&#39;rose&#39;, age&#x3D;18&#125;</span><br><span class="line">Student&#123;name&#x3D;&#39;ace&#39;, age&#x3D;17&#125;</span><br><span class="line">Student&#123;name&#x3D;&#39;jack&#39;, age&#x3D;16&#125;</span><br><span class="line">Student&#123;name&#x3D;&#39;abc&#39;, age&#x3D;16&#125;</span><br><span class="line">Student&#123;name&#x3D;&#39;mark&#39;, age&#x3D;16&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果想要规则更多一些，可以参考下面代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Collections.sort(list, <span class="keyword">new</span> Comparator&lt;Student&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Student o1, Student o2)</span> </span>&#123;</span><br><span class="line">                <span class="comment">// 年龄降序</span></span><br><span class="line">                <span class="keyword">int</span> result = o2.getAge()-o1.getAge();<span class="comment">//年龄降序</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span>(result==<span class="number">0</span>)&#123;<span class="comment">//第一个规则判断完了 下一个规则 姓名的首字母 升序</span></span><br><span class="line">                    result = o1.getName().charAt(<span class="number">0</span>)-o2.getName().charAt(<span class="number">0</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> result;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Student&#123;name&#x3D;&#39;rose&#39;, age&#x3D;18&#125;</span><br><span class="line">Student&#123;name&#x3D;&#39;ace&#39;, age&#x3D;17&#125;</span><br><span class="line">Student&#123;name&#x3D;&#39;abc&#39;, age&#x3D;16&#125;</span><br><span class="line">Student&#123;name&#x3D;&#39;jack&#39;, age&#x3D;16&#125;</span><br><span class="line">Student&#123;name&#x3D;&#39;mark&#39;, age&#x3D;16&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Big4Plus
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://big4.plus/2019/11/30/Java/23.Collections%E7%B1%BB/" title="23.Collections类">http://big4.plus/2019/11/30/Java/23.Collections类/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/30/Java/24.%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="prev" title="24.数据结构">
+      <i class="fa fa-chevron-left"></i> 24.数据结构
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/30/Java/22.Set%E6%8E%A5%E5%8F%A3/" rel="next" title="22.Set接口">
+      22.Set接口 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Collections%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD"><span class="nav-number">1.</span> <span class="nav-text">1.Collections常用功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Comparator%E6%AF%94%E8%BE%83%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">2.Comparator比较器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E7%AE%80%E8%BF%B0Comparable%E5%92%8CComparator%E4%B8%A4%E4%B8%AA%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.</span> <span class="nav-text">3.简述Comparable和Comparator两个接口的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">4.可变参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E7%BB%83%E4%B9%A0"><span class="nav-number">5.</span> <span class="nav-text">5.练习</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-%E6%89%A9%E5%B1%95"><span class="nav-number">6.</span> <span class="nav-text">6.扩展</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Big4Plus"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">Big4Plus</p>
+  <div class="site-description" itemprop="description">Big4Plus</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Big4Plus</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">337k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:06</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

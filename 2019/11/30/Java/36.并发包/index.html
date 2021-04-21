@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"big4.plus","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1.ConcurrentHashMap为什么要使用ConcurrentHashMap：  HashMap线程不安全，会导致数据错乱 使用线程安全的Hashtable效率低下  基于以上两个原因，便有了ConcurrentHashMap的登场机会。 HashMap线程不安全演示公有、静态的集合： 123public class Const &amp;#123;    public static HashMa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="36.并发包">
+<meta property="og:url" content="http://big4.plus/2019/11/30/Java/36.%E5%B9%B6%E5%8F%91%E5%8C%85/index.html">
+<meta property="og:site_name" content="Big4PlusのBlog">
+<meta property="og:description" content="1.ConcurrentHashMap为什么要使用ConcurrentHashMap：  HashMap线程不安全，会导致数据错乱 使用线程安全的Hashtable效率低下  基于以上两个原因，便有了ConcurrentHashMap的登场机会。 HashMap线程不安全演示公有、静态的集合： 123public class Const &amp;#123;    public static HashMa">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617101024.png">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617101226.png">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617101139.png">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617101932.png">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617102948.png">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617103859.png">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617103946.png">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617113318.png">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617115311.png">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617115748.png">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617120435.png">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617120918.png">
+<meta property="og:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617121327.png">
+<meta property="article:published_time" content="2019-11-29T16:00:01.000Z">
+<meta property="article:modified_time" content="2021-04-21T08:43:28.915Z">
+<meta property="article:author" content="Big4Plus">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617101024.png">
+
+<link rel="canonical" href="http://big4.plus/2019/11/30/Java/36.%E5%B9%B6%E5%8F%91%E5%8C%85/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>36.并发包 | Big4PlusのBlog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Big4PlusのBlog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">心如止水，不喜不悲。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/Java/" rel="section"><i class="fab fa-java fa-fw"></i>Java</a>
+
+  </li>
+        <li class="menu-item menu-item-linux">
+
+    <a href="/categories/Linux/" rel="section"><i class="fa fa-linux fa-fw"></i>Linux</a>
+
+  </li>
+        <li class="menu-item menu-item-database">
+
+    <a href="/categories/Database/" rel="section"><i class="fa fa-database fa-fw"></i>Database</a>
+
+  </li>
+        <li class="menu-item menu-item-tools">
+
+    <a href="/categories/Tools/" rel="section"><i class="fa fa-tools fa-fw"></i>Tools</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://big4.plus/2019/11/30/Java/36.%E5%B9%B6%E5%8F%91%E5%8C%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Big4Plus">
+      <meta itemprop="description" content="Big4Plus">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big4PlusのBlog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          36.并发包
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-30 00:00:01" itemprop="dateCreated datePublished" datetime="2019-11-30T00:00:01+08:00">2019-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-21 16:43:28" itemprop="dateModified" datetime="2021-04-21T16:43:28+08:00">2021-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-ConcurrentHashMap"><a href="#1-ConcurrentHashMap" class="headerlink" title="1.ConcurrentHashMap"></a>1.ConcurrentHashMap</h1><p>为什么要使用ConcurrentHashMap：</p>
+<ol>
+<li>HashMap线程不安全，会导致数据错乱</li>
+<li>使用线程安全的Hashtable效率低下</li>
+</ol>
+<p>基于以上两个原因，便有了ConcurrentHashMap的登场机会。</p>
+<h2 id="HashMap线程不安全演示"><a href="#HashMap线程不安全演示" class="headerlink" title="HashMap线程不安全演示"></a>HashMap线程不安全演示</h2><p>公有、静态的集合：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Const</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> HashMap&lt;String,String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>线程，向map中写入数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">500000</span>; i++) &#123;</span><br><span class="line">            Const.map.put(<span class="keyword">this</span>.getName() + (i + <span class="number">1</span>), <span class="keyword">this</span>.getName() + i + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">&quot; 结束！&quot;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        Thread1A a1 = <span class="keyword">new</span> Thread1A();</span><br><span class="line">        Thread1A a2 = <span class="keyword">new</span> Thread1A();</span><br><span class="line">        a1.setName(<span class="string">&quot;线程1-&quot;</span>);</span><br><span class="line">        a2.setName(<span class="string">&quot;线程2-&quot;</span>);</span><br><span class="line"></span><br><span class="line">        a1.start();</span><br><span class="line">        a2.start();</span><br><span class="line">        <span class="comment">//休息10秒，确保两个线程执行完毕</span></span><br><span class="line">        Thread.sleep(<span class="number">1000</span> * <span class="number">5</span>);</span><br><span class="line">        <span class="comment">//打印集合大小</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Map大小：&quot;</span> + Const.map.size());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>说明：两个线程分别向同一个map中写入500000个键值对，最后map的size应为：1000000，但多运行几次会发现有以下几种错误：</p>
+<ol>
+<li><p>假死：</p>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617101024.png"></p>
+</li>
+<li><p>异常：</p>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617101226.png"></p>
+</li>
+<li><p>错误结果：</p>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617101139.png"></p>
+</li>
+</ol>
+<h2 id="Hashtable线程安全演示"><a href="#Hashtable线程安全演示" class="headerlink" title="Hashtable线程安全演示"></a>Hashtable线程安全演示</h2><p><strong>为了保证线程安全，可以使用Hashtable。注意：线程中加入了计时</strong></p>
+<p>公有、静态的集合：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Const</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Hashtable&lt;String,String&gt; map = <span class="keyword">new</span> Hashtable&lt;&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>线程，向map中写入数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> start = System.currentTimeMillis();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">500000</span>; i++) &#123;</span><br><span class="line">            Const.map.put(<span class="keyword">this</span>.getName() + (i + <span class="number">1</span>), <span class="keyword">this</span>.getName() + i + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">long</span> end = System.currentTimeMillis();</span><br><span class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">&quot; 结束！用时：&quot;</span> + (end - start) + <span class="string">&quot; 毫秒&quot;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        Thread1A a1 = <span class="keyword">new</span> Thread1A();</span><br><span class="line">        Thread1A a2 = <span class="keyword">new</span> Thread1A();</span><br><span class="line">        a1.setName(<span class="string">&quot;线程1-&quot;</span>);</span><br><span class="line">        a2.setName(<span class="string">&quot;线程2-&quot;</span>);</span><br><span class="line"></span><br><span class="line">        a1.start();</span><br><span class="line">        a2.start();</span><br><span class="line">        <span class="comment">//休息10秒，确保两个线程执行完毕</span></span><br><span class="line">        Thread.sleep(<span class="number">1000</span> * <span class="number">5</span>);</span><br><span class="line">        <span class="comment">//打印集合大小</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Map大小：&quot;</span> + Const.map.size());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果：</p>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617101932.png"></p>
+<h2 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h2><p>公有、静态的集合：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Const</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> ConcurrentHashMap&lt;String,String&gt; map = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>线程，向map中写入数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> start = System.currentTimeMillis();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">500000</span>; i++) &#123;</span><br><span class="line">            Const.map.put(<span class="keyword">this</span>.getName() + (i + <span class="number">1</span>), <span class="keyword">this</span>.getName() + i + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">long</span> end = System.currentTimeMillis();</span><br><span class="line">        System.out.println(<span class="keyword">this</span>.getName() + <span class="string">&quot; 结束！用时：&quot;</span> + (end - start) + <span class="string">&quot; 毫秒&quot;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        Thread1A a1 = <span class="keyword">new</span> Thread1A();</span><br><span class="line">        Thread1A a2 = <span class="keyword">new</span> Thread1A();</span><br><span class="line">        a1.setName(<span class="string">&quot;线程1-&quot;</span>);</span><br><span class="line">        a2.setName(<span class="string">&quot;线程2-&quot;</span>);</span><br><span class="line"></span><br><span class="line">        a1.start();</span><br><span class="line">        a2.start();</span><br><span class="line">        <span class="comment">//休息10秒，确保两个线程执行完毕</span></span><br><span class="line">        Thread.sleep(<span class="number">1000</span> * <span class="number">5</span>);</span><br><span class="line">        <span class="comment">//打印集合大小</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Map大小：&quot;</span> + Const.map.size());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果：</p>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617102948.png"></p>
+<h2 id="ConcurrentHashMap与HashTable对比"><a href="#ConcurrentHashMap与HashTable对比" class="headerlink" title="ConcurrentHashMap与HashTable对比"></a>ConcurrentHashMap与HashTable对比</h2><p>ConcurrentHashMap与HashTable都是线程安全的，但是其实现机制有所不同，效率也有所不同，其主要区别如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">HashTable</th>
+<th align="center">ConcurrentHashMap（JDK8之前）</th>
+<th align="center">ConcurrentHashMap</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">把所有的get、put方法加上锁实现同步</td>
+<td align="center">把数据分段，每个分段分别加锁，实现同步，提高效率</td>
+<td align="center">采用CAS算法提高效率</td>
+</tr>
+</tbody></table>
+<p>HashTable效率低下原因：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> V <span class="title">get</span><span class="params">(Object key)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>HashTable容器使用synchronized来保证线程安全，但在线程竞争激烈的情况下HashTable的效率非常低下。因为当一个线程访问HashTable的同步方法，其他线程也访问HashTable的同步方法时，会进入阻塞状态。如线程1使用put进行元素添加，线程2不但不能使用put方法添加元素，也不能使用get方法来获取元素，所以竞争越激烈效率越低。</p>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617103859.png"></p>
+<p><strong>ConcurrentHashMap高效的原因：CAS + 局部(synchronized)锁定</strong>分段式锁</p>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617103946.png"></p>
+<h2 id="为什么HashMap不是线程安全的？"><a href="#为什么HashMap不是线程安全的？" class="headerlink" title="为什么HashMap不是线程安全的？"></a>为什么HashMap不是线程安全的？</h2><p>HashMap在扩容的时候，元素为重新排列（同一个桶里面的元素采用的是头插入法，原来的链表顺序会被倒置），并发场景可能会形成循环链表。</p>
+<h2 id="为什么ConcurrentHashMap不能完全替代HashTable"><a href="#为什么ConcurrentHashMap不能完全替代HashTable" class="headerlink" title="为什么ConcurrentHashMap不能完全替代HashTable"></a>为什么ConcurrentHashMap不能完全替代HashTable</h2><p>因为ConcurrentHashMap是弱一致性，其get方法没有上锁，会导致get元素的并不是当前并行还未执行完的put的值，读取到的数据并不一定是最终的值，在一些要求强一致性的场景下可能会出错。例如：需要判断当前值是否为A如果不为A则修改为C，但是当前值为B而有个put方法将其更新为A还没执行完，则最终改值就是A，可能会造成后续程序或业务的异常。</p>
+<h1 id="2-CountDownLatch"><a href="#2-CountDownLatch" class="headerlink" title="2.CountDownLatch"></a>2.CountDownLatch</h1><h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h2><p>CountDownLatch允许一个或多个线程等待其他线程完成操作，再执行自己。</p>
+<p>例如：线程1要执行打印：A和C，线程2要执行打印：B，但线程1在打印A后，要线程2打印B之后才能打印C，所以：线程1在打印A后，必须等待线程2打印完B之后才能继续执行。</p>
+<p>CountDownLatch构造方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CountDownLatch</span><span class="params">(<span class="keyword">int</span> count)</span><span class="comment">// 初始化一个指定计数器的CountDownLatch对象</span></span></span><br></pre></td></tr></table></figure>
+
+<p>CountDownLatch重要方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">await</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException<span class="comment">// 让当前线程等待</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">countDown</span><span class="params">()</span>    <span class="comment">// 计数器进行减1</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-示例"><a href="#2-示例" class="headerlink" title="2.示例"></a>2.示例</h2><ol>
+<li><p>线程1</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadA</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> CountDownLatch down;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadA</span><span class="params">(CountDownLatch down)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.down = down;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            down.await();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;C&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>线程2</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadB</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> CountDownLatch down;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadB</span><span class="params">(CountDownLatch down)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.down = down;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        down.countDown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        CountDownLatch down = <span class="keyword">new</span> CountDownLatch(<span class="number">1</span>);<span class="comment">//创建1个计数器</span></span><br><span class="line">        <span class="keyword">new</span> ThreadA(down).start();</span><br><span class="line">        <span class="keyword">new</span> ThreadB(down).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行结果<br>会保证按：A B C的顺序打印。</p>
+</li>
+</ol>
+<blockquote>
+<p>说明：CountDownLatch是通过一个计数器来实现的，每当一个线程完成了自己的任务后，可以调用countDown()方法让计数器-1，当计数器到达0时，调用CountDownLatch。await()方法的线程阻塞状态解除，继续执行。</p>
+</blockquote>
+<h1 id="3-CyclicBarrier"><a href="#3-CyclicBarrier" class="headerlink" title="3.CyclicBarrier"></a>3.CyclicBarrier</h1><h2 id="1-概述-1"><a href="#1-概述-1" class="headerlink" title="1.概述"></a>1.概述</h2><p>CyclicBarrier的字面意思是可循环使用（Cyclic）的屏障（Barrier）。它要做的事情是，让一组线程到达一个屏障（也可以叫同步点）时被阻塞，直到最后一个线程到达屏障时，屏障才会开门，所有被屏障拦截的线程才会继续运行。</p>
+<p>例如：公司召集5名员工开会，等5名员工都到了，会议开始。</p>
+<p> 我们创建5个员工线程，1个开会线程，几乎同时启动，使用CyclicBarrier保证5名员工线程全部执行后，再执行开会线程。</p>
+<p>CyclicBarrier构造方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CyclicBarrier</span><span class="params">(<span class="keyword">int</span> parties, Runnable barrierAction)</span><span class="comment">//用于在线程到达屏障时，优先执行barrierAction，方便处理更复杂的业务场景</span></span></span><br></pre></td></tr></table></figure>
+
+<p>CyclicBarrier重要方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">await</span><span class="params">()</span><span class="comment">// 每个线程调用await方法告诉CyclicBarrier我已经到达了屏障，然后当前线程被阻塞</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-示例-1"><a href="#2-示例-1" class="headerlink" title="2.示例"></a>2.示例</h2><ol>
+<li>员工线程</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> CyclicBarrier cbRef;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PersonThread</span><span class="params">(CyclicBarrier cbRef)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.cbRef = cbRef;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep((<span class="keyword">int</span>) (Math.random() * <span class="number">1000</span>));</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">&quot; 到了! &quot;</span>);</span><br><span class="line">            cbRef.await();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (BrokenBarrierException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>开会线程</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MeetingThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;好了，人都到了，开始开会......&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>测试类</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        CyclicBarrier cbRef = <span class="keyword">new</span> CyclicBarrier(<span class="number">5</span>, <span class="keyword">new</span> MeetingThread());<span class="comment">//等待5个线程执行完毕，再执行MeetingThread</span></span><br><span class="line">        PersonThread p1 = <span class="keyword">new</span> PersonThread(cbRef);</span><br><span class="line">        PersonThread p2 = <span class="keyword">new</span> PersonThread(cbRef);</span><br><span class="line">        PersonThread p3 = <span class="keyword">new</span> PersonThread(cbRef);</span><br><span class="line">        PersonThread p4 = <span class="keyword">new</span> PersonThread(cbRef);</span><br><span class="line">        PersonThread p5 = <span class="keyword">new</span> PersonThread(cbRef);</span><br><span class="line">        p1.start();</span><br><span class="line">        p2.start();</span><br><span class="line">        p3.start();</span><br><span class="line">        p4.start();</span><br><span class="line">        p5.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>执行结果</li>
+</ol>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617113318.png"></p>
+<h2 id="3-使用场景"><a href="#3-使用场景" class="headerlink" title="3.使用场景"></a>3.使用场景</h2><p>使用场景：CyclicBarrier可以用于多线程计算数据，最后合并计算结果的场景。</p>
+<p>需求：使用两个线程读取2个文件中的数据，当两个文件中的数据都读取完毕以后，进行数据的汇总操作。</p>
+<h1 id="4-Semaphore"><a href="#4-Semaphore" class="headerlink" title="4.Semaphore"></a>4.Semaphore</h1><h2 id="1-概述-2"><a href="#1-概述-2" class="headerlink" title="1.概述"></a>1.概述</h2><p>Semaphore（发信号）的主要作用是控制线程的并发数量。</p>
+<p>synchronized可以起到”锁”的作用，但某个时间段内，只能有一个线程允许执行。</p>
+<p>Semaphore可以设置同时允许几个线程执行。</p>
+<p>Semaphore字面意思是信号量的意思，它的作用是控制访问特定资源的线程数目。</p>
+<p>Semaphore构造方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Semaphore</span><span class="params">(<span class="keyword">int</span> permits)</span>               <span class="comment">//permits 表示许可线程的数量</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Semaphore</span><span class="params">(<span class="keyword">int</span> permits, <span class="keyword">boolean</span> fair)</span>    <span class="comment">//fair 表示公平性，如果这个设为 true 的话，下次执行的线程会是等待最久的线程</span></span></span><br></pre></td></tr></table></figure>
+
+<p>Semaphore重要方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">acquire</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException    <span class="comment">//表示获取许可</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">release</span><span class="params">()</span>                              <span class="comment">//release() 表示释放许可</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-示例-2"><a href="#2-示例-2" class="headerlink" title="2.示例"></a>2.示例</h2><h3 id="示例一：同时允许1个线程执行"><a href="#示例一：同时允许1个线程执行" class="headerlink" title="示例一：同时允许1个线程执行"></a>示例一：同时允许1个线程执行</h3><ol>
+<li><p>Service类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Service</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Semaphore semaphore = <span class="keyword">new</span> Semaphore(<span class="number">1</span>);<span class="comment">//1表示许可的意思，表示最多允许1个线程执行acquire()和release()之间的内容</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMethod</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            semaphore.acquire();</span><br><span class="line">            System.out.println(Thread.currentThread().getName()</span><br><span class="line">                    + <span class="string">&quot; 进入 时间=&quot;</span> + System.currentTimeMillis());</span><br><span class="line">            Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">            System.out.println(Thread.currentThread().getName()</span><br><span class="line">                    + <span class="string">&quot;   结束 时间=&quot;</span> + System.currentTimeMillis());</span><br><span class="line">            semaphore.release();</span><br><span class="line">            <span class="comment">//acquire()和release()方法之间的代码为&quot;同步代码&quot;</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>线程类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadA</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Service service;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadA</span><span class="params">(Service service)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        <span class="keyword">this</span>.service = service;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        service.testMethod();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Service service = <span class="keyword">new</span> Service();</span><br><span class="line">        <span class="comment">//启动5个线程</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">            ThreadA a = <span class="keyword">new</span> ThreadA(service);</span><br><span class="line">            a.setName(<span class="string">&quot;线程 &quot;</span> + i);</span><br><span class="line">            a.start();<span class="comment">//5个线程会同时执行Service的testMethod方法，而某个时间段只能有1个线程执行</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>结果</p>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617115311.png"></p>
+</li>
+</ol>
+<h3 id="示例二：同时允许2个线程同时执行"><a href="#示例二：同时允许2个线程同时执行" class="headerlink" title="示例二：同时允许2个线程同时执行"></a>示例二：同时允许2个线程同时执行</h3><ol>
+<li><p>修改Service类，将new Semaphore(1)改为2即可</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Service</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Semaphore semaphore = <span class="keyword">new</span> Semaphore(<span class="number">2</span>);<span class="comment">//2表示许可的意思，表示最多允许2个线程执行acquire()和release()之间的内容</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMethod</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            semaphore.acquire();</span><br><span class="line">            System.out.println(Thread.currentThread().getName()</span><br><span class="line">                    + <span class="string">&quot; 进入 时间=&quot;</span> + System.currentTimeMillis());</span><br><span class="line">            Thread.sleep(<span class="number">5000</span>);</span><br><span class="line">            System.out.println(Thread.currentThread().getName()</span><br><span class="line">                    + <span class="string">&quot;   结束 时间=&quot;</span> + System.currentTimeMillis());</span><br><span class="line">            semaphore.release();</span><br><span class="line">            <span class="comment">//acquire()和release()方法之间的代码为&quot;同步代码&quot;</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>结果</p>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617115748.png"></p>
+</li>
+</ol>
+<h1 id="5-Exchanger"><a href="#5-Exchanger" class="headerlink" title="5.Exchanger"></a>5.Exchanger</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Exchanger（交换者）是一个用于线程间协作的工具类。Exchanger用于进行线程间的数据交换。</p>
+<p>这两个线程通过exchange方法交换数据，如果第一个线程先执行exchange()方法，它会一直等待第二个线程也执行exchange方法，当两个线程都到达同步点时，这两个线程就可以交换数据，将本线程生产出来的数据传递给对方。</p>
+<p>Exchanger构造方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Exchanger</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure>
+
+<p>Exchanger重要方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">exchange</span><span class="params">(V x)</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><h3 id="示例一：exchange方法的阻塞特性"><a href="#示例一：exchange方法的阻塞特性" class="headerlink" title="示例一：exchange方法的阻塞特性"></a>示例一：exchange方法的阻塞特性</h3><ol>
+<li><p>线程A，并能够接收一个Exchanger对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadA</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Exchanger&lt;String&gt; exchanger;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadA</span><span class="params">(Exchanger&lt;String&gt; exchanger)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        <span class="keyword">this</span>.exchanger = exchanger;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;线程A欲传递值&#x27;礼物A&#x27;给线程B，并等待线程B的值...&quot;</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;在线程A中得到线程B的值=&quot;</span> + exchanger.exchange(<span class="string">&quot;礼物A&quot;</span>));</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Exchanger&lt;String&gt; exchanger = <span class="keyword">new</span> Exchanger&lt;String&gt;();</span><br><span class="line">        ThreadA a = <span class="keyword">new</span> ThreadA(exchanger);</span><br><span class="line">        a.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>结果</p>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617120435.png"></p>
+</li>
+</ol>
+<h3 id="示例二：exchange方法执行交换"><a href="#示例二：exchange方法执行交换" class="headerlink" title="示例二：exchange方法执行交换"></a>示例二：exchange方法执行交换</h3><ol>
+<li><p>线程A</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadA</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Exchanger&lt;String&gt; exchanger;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadA</span><span class="params">(Exchanger&lt;String&gt; exchanger)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        <span class="keyword">this</span>.exchanger = exchanger;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;线程A欲传递值&#x27;礼物A&#x27;给线程B，并等待线程B的值...&quot;</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;在线程A中得到线程B的值=&quot;</span> + exchanger.exchange(<span class="string">&quot;礼物A&quot;</span>));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>线程B</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadB</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Exchanger&lt;String&gt; exchanger;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadB</span><span class="params">(Exchanger&lt;String&gt; exchanger)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        <span class="keyword">this</span>.exchanger = exchanger;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;线程B欲传递值&#x27;礼物B&#x27;给线程A，并等待线程A的值...&quot;</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;在线程B中得到线程A的值=&quot;</span> + exchanger.exchange(<span class="string">&quot;礼物B&quot;</span>));</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        Exchanger&lt;String&gt; exchanger = <span class="keyword">new</span> Exchanger&lt;String&gt;();</span><br><span class="line">        ThreadA a = <span class="keyword">new</span> ThreadA(exchanger);</span><br><span class="line">        ThreadB b = <span class="keyword">new</span> ThreadB(exchanger);</span><br><span class="line">        a.start();</span><br><span class="line">        b.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>结果</p>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617120918.png"></p>
+</li>
+</ol>
+<h3 id="示例三：exchange方法的超时"><a href="#示例三：exchange方法的超时" class="headerlink" title="示例三：exchange方法的超时"></a>示例三：exchange方法的超时</h3><ol>
+<li><p>线程A</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadA</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Exchanger&lt;String&gt; exchanger;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadA</span><span class="params">(Exchanger&lt;String&gt; exchanger)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        <span class="keyword">this</span>.exchanger = exchanger;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;线程A欲传递值&#x27;礼物A&#x27;给线程B，并等待线程B的值，只等5秒...&quot;</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;在线程A中得到线程B的值 =&quot;</span> + exchanger.exchange(<span class="string">&quot;礼物A&quot;</span>,<span class="number">5</span>, TimeUnit.SECONDS));</span><br><span class="line">            System.out.println(<span class="string">&quot;线程A结束！&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (TimeoutException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;5秒钟没等到线程B的值，线程A结束！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>测试类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Run</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Exchanger&lt;String&gt; exchanger = <span class="keyword">new</span> Exchanger&lt;String&gt;();</span><br><span class="line">        ThreadA a = <span class="keyword">new</span> ThreadA(exchanger);</span><br><span class="line">        a.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>结果</p>
+<p><img src="https://gitee.com/krislin_zhao/IMGcloud/raw/master/img/20200617121327.png"></p>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>使用场景：可以做数据校对工作</p>
+<p>需求：比如我们需要将纸制银行流水通过人工的方式录入成电子银行流水。为了避免错误，采用AB岗两人进行录入，录入到两个文件中，系统需要加载这两个文件，</p>
+<p>并对两个文件数据进行校对，看看是否录入一致，</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Big4Plus
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://big4.plus/2019/11/30/Java/36.%E5%B9%B6%E5%8F%91%E5%8C%85/" title="36.并发包">http://big4.plus/2019/11/30/Java/36.并发包/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/30/Java/40.IO/" rel="prev" title="40.IO">
+      <i class="fa fa-chevron-left"></i> 40.IO
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/30/Java/30.%E5%BC%82%E5%B8%B8/" rel="next" title="30.异常">
+      30.异常 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-ConcurrentHashMap"><span class="nav-number">1.</span> <span class="nav-text">1.ConcurrentHashMap</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HashMap%E7%BA%BF%E7%A8%8B%E4%B8%8D%E5%AE%89%E5%85%A8%E6%BC%94%E7%A4%BA"><span class="nav-number">1.1.</span> <span class="nav-text">HashMap线程不安全演示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hashtable%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%BC%94%E7%A4%BA"><span class="nav-number">1.2.</span> <span class="nav-text">Hashtable线程安全演示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ConcurrentHashMap"><span class="nav-number">1.3.</span> <span class="nav-text">ConcurrentHashMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ConcurrentHashMap%E4%B8%8EHashTable%E5%AF%B9%E6%AF%94"><span class="nav-number">1.4.</span> <span class="nav-text">ConcurrentHashMap与HashTable对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88HashMap%E4%B8%8D%E6%98%AF%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%EF%BC%9F"><span class="nav-number">1.5.</span> <span class="nav-text">为什么HashMap不是线程安全的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88ConcurrentHashMap%E4%B8%8D%E8%83%BD%E5%AE%8C%E5%85%A8%E6%9B%BF%E4%BB%A3HashTable"><span class="nav-number">1.6.</span> <span class="nav-text">为什么ConcurrentHashMap不能完全替代HashTable</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-CountDownLatch"><span class="nav-number">2.</span> <span class="nav-text">2.CountDownLatch</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="nav-number">2.1.</span> <span class="nav-text">1.概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.2.</span> <span class="nav-text">2.示例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-CyclicBarrier"><span class="nav-number">3.</span> <span class="nav-text">3.CyclicBarrier</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%A6%82%E8%BF%B0-1"><span class="nav-number">3.1.</span> <span class="nav-text">1.概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%A4%BA%E4%BE%8B-1"><span class="nav-number">3.2.</span> <span class="nav-text">2.示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.3.</span> <span class="nav-text">3.使用场景</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-Semaphore"><span class="nav-number">4.</span> <span class="nav-text">4.Semaphore</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%A6%82%E8%BF%B0-2"><span class="nav-number">4.1.</span> <span class="nav-text">1.概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%A4%BA%E4%BE%8B-2"><span class="nav-number">4.2.</span> <span class="nav-text">2.示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%B8%80%EF%BC%9A%E5%90%8C%E6%97%B6%E5%85%81%E8%AE%B81%E4%B8%AA%E7%BA%BF%E7%A8%8B%E6%89%A7%E8%A1%8C"><span class="nav-number">4.2.1.</span> <span class="nav-text">示例一：同时允许1个线程执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BA%8C%EF%BC%9A%E5%90%8C%E6%97%B6%E5%85%81%E8%AE%B82%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%97%B6%E6%89%A7%E8%A1%8C"><span class="nav-number">4.2.2.</span> <span class="nav-text">示例二：同时允许2个线程同时执行</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-Exchanger"><span class="nav-number">5.</span> <span class="nav-text">5.Exchanger</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">5.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">5.2.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%B8%80%EF%BC%9Aexchange%E6%96%B9%E6%B3%95%E7%9A%84%E9%98%BB%E5%A1%9E%E7%89%B9%E6%80%A7"><span class="nav-number">5.2.1.</span> <span class="nav-text">示例一：exchange方法的阻塞特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BA%8C%EF%BC%9Aexchange%E6%96%B9%E6%B3%95%E6%89%A7%E8%A1%8C%E4%BA%A4%E6%8D%A2"><span class="nav-number">5.2.2.</span> <span class="nav-text">示例二：exchange方法执行交换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%B8%89%EF%BC%9Aexchange%E6%96%B9%E6%B3%95%E7%9A%84%E8%B6%85%E6%97%B6"><span class="nav-number">5.2.3.</span> <span class="nav-text">示例三：exchange方法的超时</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.3.</span> <span class="nav-text">使用场景</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Big4Plus"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">Big4Plus</p>
+  <div class="site-description" itemprop="description">Big4Plus</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Big4Plus</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">337k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:06</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
