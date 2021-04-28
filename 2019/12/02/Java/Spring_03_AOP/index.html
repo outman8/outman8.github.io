@@ -23,26 +23,26 @@
   <meta name="description" content="1.Spring 的 AOP 简介1.1 什么是 AOPAOP 为 Aspect Oriented Programming 的缩写，意思为面向切面编程，是通过预编译方式和运行期动态代理实现程序功能的统一维护的一种技术。 AOP 是 OOP 的延续，是软件开发中的一个热点，也是Spring框架中的一个重要内容，是函数式编程的一种衍生范型。利用AOP可以对业务逻辑的各个部分进行隔离，从而使得业务逻辑各">
 <meta property="og:type" content="article">
 <meta property="og:title" content="spring_03">
-<meta property="og:url" content="http://big4.plus/2019/12/02/Java/Spring_03/index.html">
-<meta property="og:site_name" content="Big4PlusのBlog">
+<meta property="og:url" content="http://big4.plus/2019/12/02/Java/Spring_03_AOP/index.html">
+<meta property="og:site_name" content="Big4Plus的Blog">
 <meta property="og:description" content="1.Spring 的 AOP 简介1.1 什么是 AOPAOP 为 Aspect Oriented Programming 的缩写，意思为面向切面编程，是通过预编译方式和运行期动态代理实现程序功能的统一维护的一种技术。 AOP 是 OOP 的延续，是软件开发中的一个热点，也是Spring框架中的一个重要内容，是函数式编程的一种衍生范型。利用AOP可以对业务逻辑的各个部分进行隔离，从而使得业务逻辑各">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://big4.plus/2019/12/02/Java/Spring_03/img%5C%E5%9B%BE%E7%89%871.png">
-<meta property="og:image" content="http://big4.plus/2019/12/02/Java/Spring_03/img%5C%E5%9B%BE%E7%89%872.png">
-<meta property="og:image" content="http://big4.plus/2019/12/02/Java/Spring_03/img%5C%E5%9B%BE%E7%89%873.png">
-<meta property="og:image" content="http://big4.plus/2019/12/02/Java/Spring_03/img%5C%E5%9B%BE%E7%89%874.png">
-<meta property="og:image" content="http://big4.plus/2019/12/02/Java/Spring_03/img%5C%E5%9B%BE%E7%89%875.png">
-<meta property="og:image" content="http://big4.plus/2019/12/02/Java/Spring_03/img%5C%E5%9B%BE%E7%89%876.png">
-<meta property="og:image" content="http://big4.plus/2019/12/02/Java/Spring_03/img%5C%E5%9B%BE%E7%89%877.png">
-<meta property="og:image" content="http://big4.plus/2019/12/02/Java/Spring_03/img%5C%E5%9B%BE%E7%89%878.png">
+<meta property="og:image" content="http://big4.plus/img/%E5%9B%BE%E7%89%871.png">
+<meta property="og:image" content="http://big4.plus/img/%E5%9B%BE%E7%89%872.png">
+<meta property="og:image" content="http://big4.plus/img/%E5%9B%BE%E7%89%873.png">
+<meta property="og:image" content="http://big4.plus/img/%E5%9B%BE%E7%89%874.png">
+<meta property="og:image" content="http://big4.plus/img/%E5%9B%BE%E7%89%875.png">
+<meta property="og:image" content="http://big4.plus/img/%E5%9B%BE%E7%89%876.png">
+<meta property="og:image" content="http://big4.plus/img/%E5%9B%BE%E7%89%877.png">
+<meta property="og:image" content="http://big4.plus/img/%E5%9B%BE%E7%89%878.png">
 <meta property="article:published_time" content="2019-12-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-04-28T06:26:09.819Z">
+<meta property="article:modified_time" content="2021-04-28T06:39:39.773Z">
 <meta property="article:author" content="Big4Plus">
 <meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://big4.plus/2019/12/02/Java/Spring_03/img%5C%E5%9B%BE%E7%89%871.png">
+<meta name="twitter:image" content="http://big4.plus/img/%E5%9B%BE%E7%89%871.png">
 
-<link rel="canonical" href="http://big4.plus/2019/12/02/Java/Spring_03/">
+<link rel="canonical" href="http://big4.plus/2019/12/02/Java/Spring_03_AOP/">
 
 
 <script id="page-configurations">
@@ -55,7 +55,7 @@
   };
 </script>
 
-  <title>spring_03 | Big4PlusのBlog</title>
+  <title>spring_03 | Big4Plus的Blog</title>
   
 
 
@@ -106,10 +106,10 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Big4PlusのBlog</h1>
+      <h1 class="site-title">Big4Plus的Blog</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
-      <p class="site-subtitle" itemprop="description">心如止水，不喜不悲。</p>
+      <p class="site-subtitle" itemprop="description">万事开头难。</p>
   </div>
 
   <div class="site-nav-right">
@@ -186,7 +186,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://big4.plus/2019/12/02/Java/Spring_03/">
+    <link itemprop="mainEntityOfPage" href="http://big4.plus/2019/12/02/Java/Spring_03_AOP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -195,7 +195,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Big4PlusのBlog">
+      <meta itemprop="name" content="Big4Plus的Blog">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -216,7 +216,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-28 14:26:09" itemprop="dateModified" datetime="2021-04-28T14:26:09+08:00">2021-04-28</time>
+                <time title="修改时间：2021-04-28 14:39:39" itemprop="dateModified" datetime="2021-04-28T14:39:39+08:00">2021-04-28</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -261,7 +261,7 @@
 <h4 id="1-4-AOP-的动态代理技术"><a href="#1-4-AOP-的动态代理技术" class="headerlink" title="1.4 AOP 的动态代理技术"></a>1.4 AOP 的动态代理技术</h4><p>常用的动态代理技术</p>
 <p>JDK 代理 : 基于接口的动态代理技术</p>
 <p>cglib 代理：基于父类的动态代理技术</p>
-<p><img src="img%5C%E5%9B%BE%E7%89%871.png"></p>
+<p><img src="/img/%E5%9B%BE%E7%89%871.png"></p>
 <h4 id="1-5-JDK-的动态代理"><a href="#1-5-JDK-的动态代理" class="headerlink" title="1.5 JDK 的动态代理"></a>1.5 JDK 的动态代理</h4><p>①目标类接口</p>
  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TargetInterface</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -274,7 +274,7 @@
 <p>④  调用代理对象的方法测试</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 测试,当调用接口的任何方法时，代理对象的代码都无序修改</span></span><br><span class="line">proxy.method();</span><br></pre></td></tr></table></figure>
 
-<p><img src="img%5C%E5%9B%BE%E7%89%872.png"></p>
+<p><img src="/img/%E5%9B%BE%E7%89%872.png"></p>
 <h4 id="1-6-cglib-的动态代理"><a href="#1-6-cglib-的动态代理" class="headerlink" title="1.6 cglib 的动态代理"></a>1.6 cglib 的动态代理</h4><p>①目标类</p>
   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Target</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Target running....&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -284,7 +284,7 @@
 <p>③调用代理对象的方法测试</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//测试,当调用接口的任何方法时，代理对象的代码都无序修改</span></span><br><span class="line">proxy.method();</span><br></pre></td></tr></table></figure>
 
-<p><img src="img%5C%E5%9B%BE%E7%89%873.png"></p>
+<p><img src="/img/%E5%9B%BE%E7%89%873.png"></p>
 <h4 id="1-7-AOP-相关概念"><a href="#1-7-AOP-相关概念" class="headerlink" title="1.7 AOP 相关概念"></a>1.7 AOP 相关概念</h4><p>Spring 的 AOP 实现底层就是对上面的动态代理的代码进行了封装，封装后我们只需要对需要关注的部分进行代码编写，并通过配置的方式完成指定目标的方法增强。</p>
 <p>在正式讲解 AOP 的操作之前，我们必须理解 AOP 的相关术语，常用的术语如下：</p>
 <ul>
@@ -367,7 +367,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RunWith(SpringJUnit4ClassRunner.class)</span></span><br><span class="line"><span class="meta">@ContextConfiguration(&quot;classpath:applicationContext.xml&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AopTest</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> TargetInterface target;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span></span>&#123;</span><br><span class="line">        target.method();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>⑦测试结果</p>
-<p><img src="img%5C%E5%9B%BE%E7%89%874.png"></p>
+<p><img src="/img/%E5%9B%BE%E7%89%874.png"></p>
 <h4 id="2-2-XML-配置-AOP-详解"><a href="#2-2-XML-配置-AOP-详解" class="headerlink" title="2.2 XML 配置 AOP 详解"></a>2.2 XML 配置 AOP 详解</h4><h5 id="1-切点表达式的写法"><a href="#1-切点表达式的写法" class="headerlink" title="1) 切点表达式的写法"></a>1) 切点表达式的写法</h5><p>表达式语法：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">execution([修饰符] 返回值类型 包名.类名.方法名(参数))</span><br></pre></td></tr></table></figure>
 
@@ -387,7 +387,7 @@
 <h5 id="2-通知的类型"><a href="#2-通知的类型" class="headerlink" title="2) 通知的类型"></a>2) 通知的类型</h5><p>通知的配置语法：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:通知类型</span> <span class="attr">method</span>=<span class="string">“切面类中方法名”</span> <span class="attr">pointcut</span>=<span class="string">“切点表达式</span>&quot;&gt;</span><span class="tag">&lt;/<span class="name">aop:通知类型</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="img%5C%E5%9B%BE%E7%89%875.png"></p>
+<p><img src="/img/%E5%9B%BE%E7%89%875.png"></p>
 <h5 id="3-切点表达式的抽取"><a href="#3-切点表达式的抽取" class="headerlink" title="3) 切点表达式的抽取"></a>3) 切点表达式的抽取</h5><p>当多个增强的切点表达式相同时，可以将切点表达式进行抽取，在增强中使用 pointcut-ref 属性代替 pointcut 属性来引用抽取后的切点表达式。</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--引用myAspect的Bean为切面对象--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:aspect</span> <span class="attr">ref</span>=<span class="string">&quot;myAspect&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aop:pointcut</span> <span class="attr">id</span>=<span class="string">&quot;myPointcut&quot;</span> <span class="attr">expression</span>=<span class="string">&quot;execution(* com.itheima.aop.*.*(..))&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aop:before</span> <span class="attr">method</span>=<span class="string">&quot;before&quot;</span> <span class="attr">pointcut-ref</span>=<span class="string">&quot;myPointcut&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">aop:before</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -428,9 +428,9 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RunWith(SpringJUnit4ClassRunner.class)</span></span><br><span class="line"><span class="meta">@ContextConfiguration(&quot;classpath:applicationContext.xml&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AopTest</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> TargetInterface target;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span></span>&#123;</span><br><span class="line">        target.method();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>⑦测试结果</p>
-<p><img src="img%5C%E5%9B%BE%E7%89%876.png"></p>
+<p><img src="/img/%E5%9B%BE%E7%89%876.png"></p>
 <h4 id="3-2-注解配置-AOP-详解"><a href="#3-2-注解配置-AOP-详解" class="headerlink" title="3.2 注解配置 AOP 详解"></a>3.2 注解配置 AOP 详解</h4><h5 id="1-注解通知的类型"><a href="#1-注解通知的类型" class="headerlink" title="1) 注解通知的类型"></a>1) 注解通知的类型</h5><p>通知的配置语法：@通知注解(“切点表达式”)</p>
-<p><img src="img%5C%E5%9B%BE%E7%89%877.png"></p>
+<p><img src="/img/%E5%9B%BE%E7%89%877.png"></p>
 <h5 id="2-切点表达式的抽取"><a href="#2-切点表达式的抽取" class="headerlink" title="2) 切点表达式的抽取"></a>2) 切点表达式的抽取</h5><p>同 xml配置<br>aop 一样，我们可以将切点表达式抽取。抽取方式是在切面内定义方法，在该方法上使用@Pointcut注解定义切点表达式，然后在在增强注解中进行引用。具体如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@<span class="meta">@Component(&quot;myAspect&quot;)</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAspect</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Before(&quot;MyAspect.myPoint()&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;前置代码增强.....&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Pointcut(&quot;execution(* com.itheima.aop.*.*(..))&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">myPoint</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -443,7 +443,8 @@
 <ul>
 <li>通知注解类型</li>
 </ul>
-<p><img src="img%5C%E5%9B%BE%E7%89%878.png"></p>
+<p><img src="/img/%E5%9B%BE%E7%89%878.png"></p>
+<p>​    </p>
 
     </div>
 
@@ -459,7 +460,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://big4.plus/2019/12/02/Java/Spring_03/" title="spring_03">http://big4.plus/2019/12/02/Java/Spring_03/</a>
+    <a href="http://big4.plus/2019/12/02/Java/Spring_03_AOP/" title="spring_03">http://big4.plus/2019/12/02/Java/Spring_03_AOP/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
